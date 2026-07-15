@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const telemetryController_1 = require("../controllers/telemetryController");
+const router = (0, express_1.Router)();
+router.get('/dashboard', telemetryController_1.getDashboardOverview);
+router.get('/sensors', telemetryController_1.getSensorsData);
+router.get('/plant-status', telemetryController_1.getPlantStatusData);
+router.get('/scenarios', telemetryController_1.getScenariosList);
+router.get('/payload', telemetryController_1.getFullScenarioPayload);
+exports.default = router;
