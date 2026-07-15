@@ -6,8 +6,11 @@ import {
   getScenariosList,
   getFullScenarioPayload
 } from '../controllers/telemetryController';
+import pipelineRoutes from './pipeline';
 
 const router = Router();
+
+router.use('/pipeline', pipelineRoutes);
 
 router.get('/dashboard', getDashboardOverview);
 router.get('/sensors', getSensorsData);

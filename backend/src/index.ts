@@ -1,12 +1,10 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
+import env from './config/env';
 import apiRoutes from './routes/api';
 
-dotenv.config();
-
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = env.PORT;
 
 // Middlewares
 app.use(cors({
@@ -23,9 +21,10 @@ app.use('/api', apiRoutes);
 app.get('/', (_req, res) => {
   res.json({
     platform: 'SentinelAI — Industrial Compound Risk Intelligence Platform',
-    phase: 'Phase 1 — Mock Industrial Telemetry Server',
+    phase: 'Phase 2 — Industrial Data Integration Pipeline',
     status: 'ONLINE',
     endpoints: [
+      'GET /api/pipeline?scenario={normal|warning|critical}',
       'GET /api/dashboard?scenario={normal|warning|critical}',
       'GET /api/sensors?scenario={normal|warning|critical}',
       'GET /api/plant-status?scenario={normal|warning|critical}',

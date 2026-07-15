@@ -45,6 +45,21 @@ export const OperationalContextIntelligencePanel: React.FC = () => {
             <ArrowRight className="w-3.5 h-3.5 text-slateBlue-600" />
             <span>Phase 3 reserved</span>
           </div>
+
+          {/* PART 10: Future AI Integration Preparation */}
+          <div className="pt-3 w-full flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slateBlue-800/40">
+            <button
+              disabled
+              className="w-full sm:w-auto px-4 py-2 rounded-lg bg-carbon-800 border border-slateBlue-700 text-slateBlue-400 text-xs font-mono font-semibold flex items-center justify-center gap-2 cursor-not-allowed opacity-75"
+              title="AI Risk Assessment will be enabled in Phase 4"
+            >
+              <BrainCircuit className="w-4 h-4 text-industrial-warning opacity-60" />
+              <span>Run AI Risk Assessment</span>
+            </button>
+            <span className="text-[10px] font-mono px-2 py-1 rounded bg-slateBlue-900/80 text-industrial-warning border border-industrial-warning/30 font-semibold uppercase tracking-wider">
+              Available in Phase 4
+            </span>
+          </div>
         </div>
 
         {/* Footer info */}
@@ -53,6 +68,7 @@ export const OperationalContextIntelligencePanel: React.FC = () => {
             <Shield className="w-3.5 h-3.5 text-industrial-cyan" /> Architecture compliant
           </span>
           <span className="text-slateBlue-500">Phase 1 scope</span>
+
         </div>
       </CardContent>
     </Card>

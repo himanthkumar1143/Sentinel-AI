@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { ScenarioType } from '../../types/industrial';
+import { SimplifiedArchitectureOverview } from './SimplifiedArchitectureOverview';
 import { Badge } from '../ui/badge';
 import { Card } from '../ui/card';
 import {
@@ -300,109 +301,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
         {/* ==================================================
             SECTION 4: PLATFORM ARCHITECTURE
         ================================================== */}
+        {/* ==================================================
+            SECTION 4: PLATFORM ARCHITECTURE (HIGH-LEVEL OVERVIEW)
+        ================================================== */}
         <section id="architecture" className="space-y-10 pt-4 scroll-mt-24">
-          <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <Badge variant="outline" className="font-mono text-xs">PIPELINE DESIGN</Badge>
-            <h2 className="text-2xl sm:text-4xl font-mono font-bold text-slate-100 tracking-tight">
-              Platform Architecture
-            </h2>
-            <p className="text-sm sm:text-base text-slateBlue-400 font-sans">
-              End-to-end data flow from edge industrial telemetry gateways to control room visualization.
-            </p>
-          </div>
-
-          <div className="bg-carbon-800/70 border border-slateBlue-800/90 rounded-xl p-6 sm:p-10 shadow-panel relative">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 sm:gap-6 relative z-10 items-center">
-              
-              {/* Step 1 */}
-              <div className="bg-carbon-900 border border-slateBlue-700/80 rounded-lg p-4 text-center space-y-2.5 hover:border-industrial-cyan transition-all flex flex-col items-center h-full justify-center">
-                <div className="w-10 h-10 rounded-lg bg-carbon-800 border border-slateBlue-600 flex items-center justify-center text-industrial-cyan">
-                  <Gauge className="w-5 h-5" />
-                </div>
-                <span className="text-xs font-mono font-bold text-slate-100 block">
-                  Industrial Sensors
-                </span>
-                <span className="text-[10px] font-mono text-slateBlue-500 block">
-                  Gas, Temp, Pressure
-                </span>
-              </div>
-
-              {/* Step 2 */}
-              <div className="bg-carbon-900 border border-slateBlue-700/80 rounded-lg p-4 text-center space-y-2.5 hover:border-industrial-cyan transition-all flex flex-col items-center h-full justify-center relative">
-                <div className="w-10 h-10 rounded-lg bg-carbon-800 border border-slateBlue-600 flex items-center justify-center text-industrial-cyan">
-                  <Layers className="w-5 h-5" />
-                </div>
-                <span className="text-xs font-mono font-bold text-slate-100 block">
-                  Data Integration Pipeline
-                </span>
-                <span className="text-[10px] font-mono text-slateBlue-500 block">
-                  SCADA Gateway Sync
-                </span>
-              </div>
-
-              {/* Step 3 */}
-              <div className="bg-carbon-900 border border-industrial-cyan/40 rounded-lg p-4 text-center space-y-2.5 hover:border-industrial-cyan transition-all flex flex-col items-center h-full justify-center relative shadow-inner">
-                <div className="w-10 h-10 rounded-lg bg-slateBlue-900 border border-industrial-cyan/50 flex items-center justify-center text-industrial-cyan">
-                  <BrainCircuit className="w-5 h-5" />
-                </div>
-                <span className="text-xs font-mono font-bold text-slate-100 block">
-                  Operational Context
-                </span>
-                <span className="text-[10px] font-mono text-industrial-cyan/80 block font-semibold">
-                  Phase 3 Engine
-                </span>
-              </div>
-
-              {/* Step 4 */}
-              <div className="bg-carbon-900 border border-industrial-warning/40 rounded-lg p-4 text-center space-y-2.5 hover:border-industrial-warning transition-all flex flex-col items-center h-full justify-center relative shadow-inner">
-                <div className="w-10 h-10 rounded-lg bg-slateBlue-900 border border-industrial-warning/50 flex items-center justify-center text-industrial-warning">
-                  <Cpu className="w-5 h-5" />
-                </div>
-                <span className="text-xs font-mono font-bold text-slate-100 block">
-                  Compound Risk
-                </span>
-                <span className="text-[10px] font-mono text-industrial-warning/80 block font-semibold">
-                  Phase 4 AI Engine
-                </span>
-              </div>
-
-              {/* Step 5 */}
-              <div className="bg-carbon-900 border border-industrial-safe/50 rounded-lg p-4 text-center space-y-2.5 hover:border-industrial-safe transition-all flex flex-col items-center h-full justify-center relative shadow-glow-safe">
-                <div className="w-10 h-10 rounded-lg bg-carbon-800 border border-industrial-safe/60 flex items-center justify-center text-industrial-safe">
-                  <CheckCircle2 className="w-5 h-5" />
-                </div>
-                <span className="text-xs font-mono font-bold text-slate-100 block">
-                  Safety Recommendations
-                </span>
-                <span className="text-[10px] font-mono text-industrial-safe block font-semibold">
-                  Phase 1 Active
-                </span>
-              </div>
-
-              {/* Step 6 */}
-              <div className="bg-carbon-900 border border-industrial-cyan rounded-lg p-4 text-center space-y-2.5 hover:border-cyan-300 transition-all flex flex-col items-center h-full justify-center relative shadow-[0_0_15px_rgba(6,182,212,0.3)]">
-                <div className="w-10 h-10 rounded-lg bg-industrial-cyan/20 border border-industrial-cyan flex items-center justify-center text-industrial-cyan animate-pulse">
-                  <Activity className="w-5 h-5" />
-                </div>
-                <span className="text-xs font-mono font-bold text-slate-100 block">
-                  Industrial Dashboard
-                </span>
-                <span className="text-[10px] font-mono text-industrial-cyan block font-bold">
-                  Control Room UI
-                </span>
-              </div>
-
-            </div>
-
-            {/* Architecture Footer Readout */}
-            <div className="mt-8 pt-4 border-t border-slateBlue-800/80 flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-slateBlue-400 gap-2">
-              <span className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-industrial-safe animate-ping" />
-                <span>TELEMETRY THROUGHPUT: 100% NOMINAL</span>
-              </span>
-              <span>ARCHITECTURE SPECIFICATION: SIEMENS / HONEYWELL COMPLIANT</span>
-            </div>
-          </div>
+          <SimplifiedArchitectureOverview />
         </section>
 
         {/* ==================================================
