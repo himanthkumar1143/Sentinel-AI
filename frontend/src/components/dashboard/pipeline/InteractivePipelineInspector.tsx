@@ -64,9 +64,10 @@ export const InteractivePipelineInspector: React.FC<PipelineInspectorProps> = ({
   const [sourcesConnected, setSourcesConnected] = useState<number>(0);
   const [validationProgress, setValidationProgress] = useState<number>(0);
 
-  // Validation & UPM sequential items (PART 8 & 9)
+  // Validation, UPM, and Phase 3 Rule execution items (PART 1 & PART 2)
   const [checkedValidationItems, setCheckedValidationItems] = useState<string[]>([]);
   const [upmLoadedBars, setUpmLoadedBars] = useState<string[]>([]);
+  const [evaluatedRuleChecks, setEvaluatedRuleChecks] = useState<string[]>([]);
 
   const stages: StageDefinition[] = [
     {
@@ -130,11 +131,11 @@ export const InteractivePipelineInspector: React.FC<PipelineInspectorProps> = ({
       title: 'Operational Context',
       subtitle: 'Spatial Activity Correlation',
       purpose: 'Correlates physical work permits with equipment maintenance arrays.',
-      description: 'Cross-references active high-risk work permits with maintenance overhauls and ambient gas readings to establish true operational context.',
-      phase: 'Phase 3 Locked',
-      isLocked: true,
+      description: 'Cross-references active high-risk work permits with maintenance overhauls and ambient gas readings using 52 deterministic engineering rules to establish true explainable operational context.',
+      phase: 'Phase 3 Active Engine',
+      isLocked: false,
       icon: <BrainCircuit className="w-5 h-5" />,
-      samplePayload: `[RESERVED FOR PHASE 3: Spatial permit conflict graph & operational context vectors]`
+      samplePayload: `{ "contextId": "CTX-CRITICAL-L92K", "scenario": "${scenario}", "confidence": 99, "rulesEvaluated": 52, "rulesTriggered": 11, "compoundRules": 4, "observationsCount": 8, "status": "CRITICAL ALERT - HIGH RISK" }`
     },
     {
       id: 7,
@@ -170,6 +171,7 @@ export const InteractivePipelineInspector: React.FC<PipelineInspectorProps> = ({
 
     setCheckedValidationItems([]);
     setUpmLoadedBars([]);
+    setEvaluatedRuleChecks([]);
     setPacketsCount(0);
     setSourcesConnected(0);
     setValidationProgress(0);
@@ -241,38 +243,57 @@ export const InteractivePipelineInspector: React.FC<PipelineInspectorProps> = ({
       }, 2750 + index * 180));
     });
 
-    // ST-06: Operational Context (3800ms to 4600ms)
+    // ST-06: Operational Context (3800ms to 4800ms) - PART 1 & PART 2
     timers.push(setTimeout(() => {
       setStageStatuses(prev => ({ ...prev, 5: 'completed', 6: 'running' }));
-      setActiveStatusMessage('Checking Operational Context Intelligence (Phase 3)...');
+      setActiveStatusMessage('Reading Sensor Telemetry...');
       setSelectedStage(6);
     }, 3800));
 
-    // ST-07: Compound Risk Intelligence (4600ms to 5200ms)
+    // PART 2 Progress Stages alongside PART 1 Rule Visualizations
+    const stage6Steps = [
+      { progress: 'Checking Maintenance Activities...', rule: '✓ GasRule-01' },
+      { progress: 'Validating Work Permits...', rule: '✓ PressureRule-02' },
+      { progress: 'Analyzing Workforce Distribution...', rule: '✓ TemperatureRule-01' },
+      { progress: 'Evaluating Environmental Conditions...', rule: '✓ HumidityRule-01' },
+      { progress: 'Executing Compound Rules...', rule: '✓ MaintenanceRule-01' },
+      { progress: 'Generating Operational Context...', rule: '✓ WorkerRule-01' },
+      { progress: 'Generating Operational Context...', rule: '✓ CompoundRule-03' },
+      { progress: 'Completed', rule: '✓ CompoundRule-05' }
+    ];
+
+    stage6Steps.forEach((item, index) => {
+      timers.push(setTimeout(() => {
+        setActiveStatusMessage(item.progress);
+        setEvaluatedRuleChecks(prev => [...prev, item.rule]);
+      }, 3880 + index * 115));
+    });
+
+    // ST-07: Compound Risk Intelligence (4800ms to 5400ms)
     timers.push(setTimeout(() => {
       setStageStatuses(prev => ({ ...prev, 6: 'completed', 7: 'running' }));
       setActiveStatusMessage('Verifying Compound Risk Probability Vectors (Phase 4)...');
       setPacketsCount(1420);
       setSelectedStage(7);
-    }, 4600));
+    }, 4800));
 
-    // ST-08: Industrial Dashboard (5200ms to 5800ms)
+    // ST-08: Industrial Dashboard (5400ms to 6000ms)
     timers.push(setTimeout(() => {
       setStageStatuses(prev => ({ ...prev, 7: 'completed', 8: 'running' }));
       setActiveStatusMessage('Synchronizing Dashboard with Verified Telemetry...');
       setIsFinishing(true);
       setSelectedStage(8);
-    }, 5200));
+    }, 5400));
 
-    // Simulation complete! (5800ms)
+    // Simulation complete! (6000ms)
     timers.push(setTimeout(() => {
       setStageStatuses(prev => ({ ...prev, 8: 'completed' }));
       setActiveStatusMessage('Ready');
       setIsProcessing(false);
       setIsFinishing(false);
-      setShowSummaryCard(true); // PART 6 summary card
-      onSimulationComplete?.(); // PART 1 triggers simultaneous dashboard sync & glow!
-    }, 5800));
+      setShowSummaryCard(true);
+      onSimulationComplete?.();
+    }, 6000));
 
     // Auto fade summary card after 10 seconds
     timers.push(setTimeout(() => {
@@ -880,6 +901,43 @@ export const InteractivePipelineInspector: React.FC<PipelineInspectorProps> = ({
             </div>
           </div>
         </div>
+
+        {/* PART 1: LIVE RULE EXECUTION VISUALIZATION (STAGE 6 ST-06) */}
+        {selectedStage === 6 && (
+          <div className="space-y-3 bg-carbon-900/90 border border-industrial-cyan/40 rounded-xl p-5 shadow-inner animate-in fade-in duration-300">
+            <div className="flex items-center justify-between border-b border-slateBlue-800/80 pb-3">
+              <span className="font-mono text-xs font-bold uppercase tracking-wide text-industrial-cyan flex items-center gap-2">
+                <BrainCircuit className="w-4 h-4 text-industrial-cyan animate-pulse" />
+                Deterministic Engineering Rule Evaluation (Phase 3 Active Engine)
+              </span>
+              <span className="text-[11px] font-mono text-slateBlue-400">
+                {evaluatedRuleChecks.length > 0 ? `${evaluatedRuleChecks.length} / 8 Rules Evaluated` : 'Click "Run Complete Simulation" to watch live execution'}
+              </span>
+            </div>
+            {evaluatedRuleChecks.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 pt-1">
+                {evaluatedRuleChecks.map((check, idx) => (
+                  <div
+                    key={idx}
+                    className="p-2.5 rounded-lg bg-carbon-950 border border-industrial-safe/40 flex items-center justify-between text-xs font-mono text-industrial-safe animate-in fade-in slide-in-from-left-2 duration-200"
+                  >
+                    <span className="font-semibold">{check}</span>
+                    <span className="w-2 h-2 rounded-full bg-industrial-safe animate-ping" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 pt-1 opacity-60">
+                {['GasRule-01', 'PressureRule-02', 'TemperatureRule-01', 'HumidityRule-01', 'MaintenanceRule-01', 'WorkerRule-01', 'CompoundRule-03', 'CompoundRule-05'].map((r, idx) => (
+                  <div key={idx} className="p-2.5 rounded-lg bg-carbon-950/60 border border-slateBlue-800 flex items-center justify-between text-xs font-mono text-slateBlue-400">
+                    <span>○ {r}</span>
+                    <span className="text-[10px] uppercase text-slateBlue-600">Standby</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* JSON Code Box (Exactly preserved with improved presentation) */}
         <div className="space-y-2.5 pt-1">

@@ -101,13 +101,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {/* Workspace 3 — Intelligence */}
       {activeWorkspace === 'intelligence' && (
         <div className="space-y-8 animate-in fade-in-50 slide-in-from-bottom-2 duration-300">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className={`transition-all duration-700 ${isRecentlySynced ? 'p-1.5 rounded-2xl border border-industrial-cyan/60 shadow-[0_0_25px_rgba(6,182,212,0.28)] bg-industrial-cyan/[0.02]' : ''}`}>
-              <OperationalContextIntelligencePanel />
-            </div>
-            <div className={`transition-all duration-700 ${isRecentlySynced ? 'p-1.5 rounded-2xl border border-industrial-cyan/60 shadow-[0_0_25px_rgba(6,182,212,0.28)] bg-industrial-cyan/[0.02]' : ''}`}>
-              <CompoundRiskIntelligencePanel />
-            </div>
+          <div className={`transition-all duration-700 ${isRecentlySynced ? 'p-1.5 rounded-2xl border border-industrial-cyan/60 shadow-[0_0_25px_rgba(6,182,212,0.28)] bg-industrial-cyan/[0.02]' : ''}`}>
+            <OperationalContextIntelligencePanel
+              operationalContext={(data as any).operationalContext}
+              scenario={currentScenario}
+            />
+          </div>
+          <div className={`transition-all duration-700 ${isRecentlySynced ? 'p-1.5 rounded-2xl border border-industrial-cyan/60 shadow-[0_0_25px_rgba(6,182,212,0.28)] bg-industrial-cyan/[0.02]' : ''}`}>
+            <CompoundRiskIntelligencePanel />
           </div>
         </div>
       )}

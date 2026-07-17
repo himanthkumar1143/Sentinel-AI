@@ -230,7 +230,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="p-6 flex flex-col justify-between border-slateBlue-800/90 bg-carbon-800/80 hover:border-industrial-cyan/50 transition-all">
+            <Card glow="safe" className="p-6 flex flex-col justify-between border-industrial-safe/40 bg-carbon-800/90 hover:border-industrial-safe/60 transition-all">
               <div className="space-y-4">
                 <div className="w-12 h-12 rounded-lg bg-slateBlue-900/80 border border-slateBlue-700 flex items-center justify-center shadow-glow-safe">
                   <BrainCircuit className="w-6 h-6 text-industrial-cyan" />
@@ -244,8 +244,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
               </div>
               <div className="pt-6 border-t border-slateBlue-800/60 mt-6 flex items-center justify-between text-xs font-mono">
                 <span className="text-slateBlue-400">Roadmap Status</span>
-                <Badge variant="outline" className="border-industrial-cyan/40 text-industrial-cyan">
-                  Phase 3 Implementation
+                <Badge variant="safe">
+                  Phase 3 Active ✓
                 </Badge>
               </div>
             </Card>

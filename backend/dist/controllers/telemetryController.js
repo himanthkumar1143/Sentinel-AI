@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFullScenarioPayload = exports.getScenariosList = exports.getPlantStatusData = exports.getSensorsData = exports.getDashboardOverview = void 0;
 const mockData_1 = require("../data/mockData");
+const pipelineService_1 = require("../services/pipelineService");
 function getScenarioKey(req) {
     const queryScenario = req.query.scenario;
     if (queryScenario === 'warning' || queryScenario === 'critical' || queryScenario === 'normal') {
@@ -51,8 +52,18 @@ const getScenariosList = (_req, res) => {
     });
 };
 exports.getScenariosList = getScenariosList;
-const getFullScenarioPayload = (req, res) => {
+const getFullScenarioPayload = async (req, res) => {
     const scenario = getScenarioKey(req);
-    res.json(mockData_1.SCENARIOS_DATA[scenario]);
+    const data = { ...mockData_1.SCENARIOS_DATA[scenario] };
+    try {
+        const pipelineResult = await pipelineService_1.PipelineService.runIntegrationPipeline(scenario);
+        if (pipelineResult.operationalContext) {
+            data.operationalContext = pipelineResult.operationalContext;
+        }
+    }
+    catch (err) {
+        console.error('Error attaching operationalContext to payload:', err);
+    }
+    res.json(data);
 };
 exports.getFullScenarioPayload = getFullScenarioPayload;

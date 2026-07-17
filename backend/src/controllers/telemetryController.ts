@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { SCENARIOS_DATA, SCENARIO_INFOS } from '../data/mockData';
 import { ScenarioType } from '../types/industrial';
+import { PipelineService } from '../services/pipelineService';
+
 
 function getScenarioKey(req: Request): ScenarioType {
   const queryScenario = req.query.scenario as string;
@@ -52,7 +54,17 @@ export const getScenariosList = (_req: Request, res: Response) => {
   });
 };
 
-export const getFullScenarioPayload = (req: Request, res: Response) => {
+export const getFullScenarioPayload = async (req: Request, res: Response) => {
   const scenario = getScenarioKey(req);
-  res.json(SCENARIOS_DATA[scenario]);
+  const data = { ...SCENARIOS_DATA[scenario] };
+  try {
+    const pipelineResult = await PipelineService.runIntegrationPipeline(scenario);
+    if (pipelineResult.operationalContext) {
+      (data as any).operationalContext = pipelineResult.operationalContext;
+    }
+  } catch (err) {
+    console.error('Error attaching operationalContext to payload:', err);
+  }
+  res.json(data);
 };
+

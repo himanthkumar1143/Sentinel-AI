@@ -866,3 +866,81 @@ export async function fetchTelemetryScenario(scenario: ScenarioType): Promise<In
   }
   return FALLBACK_SCENARIOS[scenario];
 }
+
+export async function fetchAIRiskAssessment(context: any, forceRefresh = false, useFallback = false): Promise<any> {
+  try {
+    // PART 2 & PART 3 — Remove unnecessary presentation/UI arrays and send minimal AI reasoning request
+    const minimalContext = {
+      scenario: context?.scenario || 'normal',
+      contextId: context?.contextId || `CTX-${context?.scenario?.toUpperCase() || 'NORMAL'}-2026-001`,
+      overallStatus: context?.overallStatus || 'ONLINE - ACTIVE',
+      executiveSummary: context?.executiveSummary || '',
+      observations: (context?.generatedObservations || context?.observations || []).slice(0, 15).map((o: any) => ({
+        id: o.id,
+        severity: o.severity,
+        category: o.category,
+        title: o.title,
+        summary: o.summary,
+        affectedZones: o.affectedZones || [o.affectedZone || 'Plant-Wide'],
+        triggeringRuleId: o.triggeringRuleId
+      })),
+      triggeredRules: (context?.ruleEvaluations || context?.ruleDecisions || context?.triggeredRules || [])
+        .filter((r: any) => r.isTriggered || r.status === 'Triggered' || r.triggeringRuleId)
+        .slice(0, 20)
+        .map((r: any) => ({
+          ruleId: r.ruleId || r.id,
+          ruleName: r.ruleName || r.name,
+          category: r.category,
+          currentValue: r.currentValue,
+          threshold: r.threshold
+        })),
+      statistics: context?.domainStats || context?.statistics || {},
+      recommendations: (context?.recommendations || []).slice(0, 10).map((rec: any) => ({
+        id: rec.id,
+        title: rec.title,
+        category: rec.category,
+        priority: rec.priority
+      })),
+      compoundRiskIndex: context?.compoundRiskIndex || context?.overallRiskScore || 89
+    };
+
+    const targetUrl = API_BASE_URL.replace(/\/+$/, '').endsWith('/api')
+      ? `${API_BASE_URL.replace(/\/+$/, '')}/ai/analyze?force=${forceRefresh ? 'true' : 'false'}&fallback=${useFallback ? 'true' : 'false'}`
+      : `${API_BASE_URL.replace(/\/+$/, '')}/api/ai/analyze?force=${forceRefresh ? 'true' : 'false'}&fallback=${useFallback ? 'true' : 'false'}`;
+
+    const requestBody = {
+      scenario: minimalContext.scenario,
+      contextId: minimalContext.contextId,
+      context: minimalContext,
+      forceRefresh,
+      fallback: useFallback
+    };
+
+    console.log(`\n==============================`);
+    console.log(`AI REQUEST DEBUG`);
+    console.log(`==============================`);
+    console.log(`Target URL: ${targetUrl}`);
+    console.log(`HTTP Method: POST`);
+    console.log(`Request Body:`, JSON.stringify(requestBody, null, 2));
+    console.log(`==============================\n`);
+
+    const response = await fetch(targetUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (data && data.success && data.report) {
+        return data.report;
+      }
+    }
+    const errPayload = await response.json().catch(() => null);
+    throw new Error(errPayload?.message || errPayload?.error || `AI Risk Assessment failed with HTTP ${response.status}`);
+  } catch (err: any) {
+    throw err;
+  }
+}

@@ -303,6 +303,175 @@ export interface UnifiedPlantModel {
     action: string;
     status: string;
   }>;
+  operationalContext?: OperationalContext;
+}
+
+// ==========================================
+// Phase 3: Operational Context Intelligence Interfaces
+// ==========================================
+
+export interface DependencyNode {
+  step?: number;
+  label?: string;
+  type?: 'Sensor' | 'Workforce' | 'Maintenance' | 'Permit' | 'Rule' | 'Observation' | 'Compound' | string;
+  value?: string | number;
+  description?: string;
+  sourceSystem?: string;
+  actualValue?: string | number;
+  threshold?: string | number;
+  ruleName?: string;
+}
+
+export interface Observation {
+  id: string;
+  timestamp: string;
+  category: 'Safety' | 'Operations' | 'Maintenance' | 'Environmental' | 'Compound' | 'Personnel';
+  severity: 'critical' | 'warning' | 'info' | 'safe';
+  title: string;
+  observation?: string;
+  summary: string;
+  explanation?: string;
+  affectedZones: string[];
+  affectedZone?: string;
+  triggeringRuleId: string;
+  triggeredRule?: string;
+  triggeringRuleName: string;
+  correlationNodes: string[];
+  dependencyChain: DependencyNode[];
+  dependencies?: DependencyNode[];
+  supportingEvidence: string[];
+  evidence?: string[];
+  relatedRules?: string[];
+  tags?: string[];
+  impactedAssets?: string[];
+  sourceSystem?: string;
+}
+
+export interface RuleEvaluationResult {
+  ruleId: string;
+  ruleName: string;
+  category: 'Safety' | 'Operations' | 'Maintenance' | 'Environmental' | 'Compound' | 'Personnel';
+
+  purpose: string;
+  condition: string;
+  threshold?: string | number;
+  currentValue: string | number;
+  isTriggered: boolean;
+  reason: string;
+  observationText?: string;
+  severity?: 'critical' | 'warning' | 'info' | 'safe';
+  evidence?: string[];
+  sourceSystem?: string;
+  affectedZone?: string;
+  affectedZones?: string[];
+  correlationNodes?: string[];
+  dependencySteps?: DependencyNode[];
+}
+
+export interface ExecutiveOperationalSummary {
+  scenario: string;
+  overallPlantStatus: string;
+  primaryFactors: string[];
+  personnelImpact: string;
+  operationalFocus: string;
+  contextConfidence: number;
+  generatedTime: string;
+}
+
+export interface ExecutiveKpiSummary {
+  overallStatus: string;
+  contextConfidence: number;
+  triggeredRulesCount: number;
+  affectedZonesCount: number;
+  personnelExposureCount: number;
+}
+
+export interface RuleDistribution {
+  safetyRules: number;
+  operationalRules: number;
+  maintenanceRules: number;
+  environmentalRules: number;
+  compoundRules: number;
+}
+
+export interface RuleCoverageSummary {
+  rulesLoaded: number;
+  rulesEvaluated: number;
+  rulesTriggered: number;
+  coveragePct: number;
+  executionStatus: string;
+}
+
+export interface ContextGenerationTimelineItem {
+  timestamp: string;
+  step: string;
+  status: 'completed' | 'running' | 'failed';
+}
+
+export interface OperationalContext {
+  contextId: string;
+  generatedAt: string;
+  timestamp?: string;
+  scenario: string;
+  overallOperationalStatus: string;
+  overallStatus?: string;
+  contextConfidence: number;
+  executionTimeMs: number;
+  statistics: {
+    rulesLoaded: number;
+    rulesTriggered: number;
+    compoundRulesTriggered: number;
+    observationsGenerated: number;
+    executionTimeMs: number;
+    contextConfidence: number;
+  };
+  kpiSummary?: {
+    overallConfidence: number;
+    activeRulesCount: number;
+    triggeredAlertsCount: number;
+    compoundRiskLevel: 'SAFE' | 'WARNING' | 'CRITICAL';
+    processingTimeMs: number;
+    affectedZonesCount?: number;
+    personnelExposureCount?: number;
+  };
+  executiveKpiSummary: ExecutiveKpiSummary;
+  executiveSummary: ExecutiveOperationalSummary;
+  ruleCoverage: RuleCoverageSummary;
+  ruleDistribution: RuleDistribution;
+  domainStats?: {
+    safetyCount: number;
+    operationsCount: number;
+    maintenanceCount: number;
+    environmentalCount: number;
+    compoundCount: number;
+  };
+  timeline: ContextGenerationTimelineItem[];
+  timelineActivity?: {
+    timestamp: string;
+    domain: string;
+    eventTitle: string;
+    description: string;
+    severity: 'critical' | 'warning' | 'info' | 'safe';
+  }[];
+  spatialCorrelations?: {
+    nodeId: string;
+    nodeName: string;
+    nodeType: 'Reactor' | 'Storage' | 'Piping' | 'Control' | 'Utility' | 'Zone';
+    status: 'NORMAL' | 'WARNING' | 'CRITICAL';
+    activePermits: number;
+    activeMaintenance: number;
+    gasConcentrationPpm: number;
+    temperatureC: number;
+    pressureBar: number;
+    connectedNodes: string[];
+  }[];
+  generatedObservations: Observation[];
+  observations?: Observation[];
+  ruleDecisions: RuleEvaluationResult[];
+  ruleEvaluations?: RuleEvaluationResult[];
+  affectedAreas: string[];
+  supportingEvidence: string[];
+  [key: string]: any;
 }
 
 // Pipeline API Response
@@ -315,4 +484,6 @@ export interface PipelineExecutionResult {
   validationReport: ValidationReport;
   normalizedData: NormalizedIndustrialData;
   unifiedPlantModel: UnifiedPlantModel;
+  operationalContext?: OperationalContext;
 }
+
