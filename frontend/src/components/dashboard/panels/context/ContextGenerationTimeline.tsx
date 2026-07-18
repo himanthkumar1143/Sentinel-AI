@@ -63,7 +63,7 @@ export const ContextGenerationTimeline: React.FC<ContextGenerationTimelineProps>
         <div className="flex items-center justify-between border-b border-slateBlue-800/80 pb-3">
           <div className="flex items-center gap-2 text-sm font-mono font-bold text-slate-100 uppercase tracking-wide">
             <Clock className="w-4 h-4 text-industrial-cyan" />
-            <span>Cross-Domain Activity &amp; Event Correlation Timeline (Part 14)</span>
+            <span>Cross-Domain Activity &amp; Event Correlation Timeline</span>
           </div>
           <span className="text-xs font-mono text-slateBlue-400">Temporal Sequence</span>
         </div>

@@ -4,7 +4,8 @@ import {
   getSensorsData,
   getPlantStatusData,
   getScenariosList,
-  getFullScenarioPayload
+  getFullScenarioPayload,
+  simulateCustomScenario
 } from '../controllers/telemetryController';
 import { getOperationalContext } from '../controllers/contextController';
 import pipelineRoutes from './pipeline';
@@ -21,6 +22,10 @@ router.get('/plant-status', getPlantStatusData);
 router.get('/scenarios', getScenariosList);
 router.get('/payload', getFullScenarioPayload);
 router.get('/context', getOperationalContext);
+
+// PART 9: Phase 5 Interactive Scenario Builder Simulation routes
+router.post('/simulate', simulateCustomScenario);
+router.post('/pipeline/simulate', simulateCustomScenario);
 
 export default router;
 

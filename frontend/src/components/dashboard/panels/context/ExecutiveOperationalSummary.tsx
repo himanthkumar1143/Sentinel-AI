@@ -42,7 +42,7 @@ export const ExecutiveOperationalSummary: React.FC<ExecutiveOperationalSummaryPr
               isCritical ? 'text-industrial-critical' : isWarning ? 'text-industrial-warning' : 'text-industrial-cyan'
             }`}>
               <Sparkles className="w-3.5 h-3.5" />
-              EXECUTIVE OPERATIONAL BRIEFING — PHASE 3 INTELLIGENCE SYNTHESIS
+              EXECUTIVE OPERATIONAL BRIEFING
             </span>
           </div>
           <p className="text-sm sm:text-base font-sans font-medium text-slate-100 leading-relaxed">

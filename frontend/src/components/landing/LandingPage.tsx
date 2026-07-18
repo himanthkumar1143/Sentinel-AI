@@ -245,7 +245,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
               <div className="pt-6 border-t border-slateBlue-800/60 mt-6 flex items-center justify-between text-xs font-mono">
                 <span className="text-slateBlue-400">Roadmap Status</span>
                 <Badge variant="safe">
-                  Phase 3 Active ✓
+                  Stage 3 Active ✓
                 </Badge>
               </div>
             </Card>
@@ -265,7 +265,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
               <div className="pt-6 border-t border-slateBlue-800/60 mt-6 flex items-center justify-between text-xs font-mono">
                 <span className="text-slateBlue-400">Roadmap Status</span>
                 <Badge variant="outline" className="border-industrial-warning/40 text-industrial-warning">
-                  Phase 4 Implementation
+                  Stage 4 Implementation
                 </Badge>
               </div>
             </Card>
@@ -285,7 +285,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
               <div className="pt-6 border-t border-slateBlue-800/60 mt-6 flex items-center justify-between text-xs font-mono">
                 <span className="text-slateBlue-400">Roadmap Status</span>
                 <Badge variant="safe">
-                  Phase 1 Active
+                  Stage 1 Active
                 </Badge>
               </div>
             </Card>
@@ -293,7 +293,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
 
           <div className="bg-carbon-800/50 border border-slateBlue-800/80 rounded-lg p-4 text-center max-w-3xl mx-auto">
             <p className="text-xs font-mono text-slateBlue-400">
-              <strong className="text-slate-200">NOTE ON PLATFORM ROADMAP:</strong> Phase 1 provides the complete visualization, telemetry monitoring, and recommendation foundation. Operational Context (Phase 3) and AI Compound Risk (Phase 4) engines are introduced sequentially in upcoming implementation phases.
+              <strong className="text-slate-200">NOTE ON PLATFORM ROADMAP:</strong> Stage 1 provides the complete visualization, telemetry monitoring, and recommendation foundation. Operational Context (Stage 3) and AI Compound Risk (Stage 4) engines are introduced sequentially in upcoming implementation phases.
             </p>
           </div>
         </section>
@@ -431,7 +431,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
                     <span>Operational Context Intelligence Engine</span>
                   </div>
                   <Badge variant="outline" className="border-industrial-cyan/40 text-industrial-cyan font-mono text-xs">
-                    Phase 3
+                    Stage 3
                   </Badge>
                 </div>
                 <p className="text-xs text-slateBlue-300 font-sans leading-relaxed">
@@ -446,7 +446,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
                     <span>Compound Risk Intelligence Engine</span>
                   </div>
                   <Badge variant="outline" className="border-industrial-warning/40 text-industrial-warning font-mono text-xs">
-                    Phase 4
+                    Stage 4
                   </Badge>
                 </div>
                 <p className="text-xs text-slateBlue-300 font-sans leading-relaxed">
@@ -569,7 +569,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
               </h2>
 
               <p className="text-sm sm:text-base text-slateBlue-300 font-sans leading-relaxed">
-                The Phase 1 dashboard includes three active simulation modes: <strong className="text-industrial-safe">Normal Operation</strong>, <strong className="text-industrial-warning">Warning State</strong>, and <strong className="text-industrial-critical">Critical Compound Risk</strong>.
+                The Stage 1 dashboard includes three active simulation modes: <strong className="text-industrial-safe">Normal Operation</strong>, <strong className="text-industrial-warning">Warning State</strong>, and <strong className="text-industrial-critical">Critical Compound Risk</strong>.
               </p>
 
               <p className="text-xs sm:text-sm text-slateBlue-400 font-sans leading-relaxed">
@@ -653,7 +653,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchDashboard }) =
 
           <div className="flex items-center gap-4 text-slateBlue-500">
             <Badge variant="outline" className="text-[10px] border-slateBlue-700">
-              Hackathon Prototype
+              Enterprise Demo
             </Badge>
             <span>2026 Enterprise SCADA Core</span>
           </div>

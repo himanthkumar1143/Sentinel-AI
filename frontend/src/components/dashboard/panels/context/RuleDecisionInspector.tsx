@@ -30,7 +30,7 @@ export const RuleDecisionInspector: React.FC<RuleDecisionInspectorProps> = ({ ru
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slateBlue-800/80 pb-3">
           <div className="flex items-center gap-2 text-sm font-mono font-bold text-slate-100 uppercase tracking-wide">
             <Cpu className="w-4 h-4 text-industrial-cyan" />
-            <span>Live Engineering Rule Decision Inspector (Part 17)</span>
+            <span>Live Engineering Rule Decision Inspector</span>
           </div>
           <span className="text-xs font-mono text-slateBlue-400">
             Showing {filteredRules.length} of {ruleEvaluations.length} Evaluated Rules

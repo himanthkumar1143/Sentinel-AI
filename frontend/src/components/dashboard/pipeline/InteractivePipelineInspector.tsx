@@ -26,6 +26,7 @@ interface PipelineInspectorProps {
   scenario: ScenarioType;
   onSimulationComplete?: () => void;
   onSimulationStart?: () => void;
+  autoRun?: boolean;
 }
 
 type StageStatus = 'idle' | 'running' | 'completed';
@@ -46,9 +47,10 @@ interface StageDefinition {
 export const InteractivePipelineInspector: React.FC<PipelineInspectorProps> = ({
   scenario,
   onSimulationComplete,
-  onSimulationStart
+  onSimulationStart,
+  autoRun = false
 }) => {
-  const [selectedStage, setSelectedStage] = useState<number>(5); // Default to UPM
+  const [selectedStage, setSelectedStage] = useState<number>(1);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [isFinishing, setIsFinishing] = useState<boolean>(false);
   const [showSummaryCard, setShowSummaryCard] = useState<boolean>(false);
@@ -69,96 +71,100 @@ export const InteractivePipelineInspector: React.FC<PipelineInspectorProps> = ({
   const [upmLoadedBars, setUpmLoadedBars] = useState<string[]>([]);
   const [evaluatedRuleChecks, setEvaluatedRuleChecks] = useState<string[]>([]);
 
+  React.useEffect(() => {
+    if (autoRun && !isProcessing && !isFinishing) {
+      handleRunSimulation();
+    }
+  }, [autoRun]);
+
   const stages: StageDefinition[] = [
     {
       id: 1,
-      code: 'ST-01',
-      title: 'Industrial Sources',
+      code: 'Stage 1',
+      title: 'Collect Plant Data',
       subtitle: 'SCADA / Gas / Temp / Pressure / Humidity',
       purpose: 'Raw edge telemetry ingestion across 8 plant sectors.',
       description: 'Continuous real-time collection from edge SCADA sensors, pressure manifolds, thermal arrays, and SAP workforce management systems.',
-      phase: 'Phase 2 Source',
+      phase: 'Ingestion Engine',
       icon: <Gauge className="w-5 h-5" />,
       samplePayload: `{ "sensor_id": "scada-gas-101", "reading_ppm": 1.4, "status_flag": "NORMAL", "timestamp": "${new Date().toISOString()}" }`
     },
     {
       id: 2,
-      code: 'ST-02',
-      title: 'Data Collection',
-      subtitle: 'Multi-Source Ingestion Gateway',
-      purpose: 'Centralized protocol gateway and packet aggregation.',
-      description: 'Aggregates disparate industrial payloads (OPC-UA, MQTT, REST) into a standardized collection envelope with exact arrival timestamps.',
-      phase: 'Phase 2 Collector',
-      icon: <Database className="w-5 h-5" />,
-      samplePayload: `{ "collectionTimestamp": "${new Date().toISOString()}", "sourcesCount": 8, "packetBuffer": "HEALTHY", "sources": { "gas": [...], "maintenance": {...} } }`
-    },
-    {
-      id: 3,
-      code: 'ST-03',
-      title: 'Validation',
-      subtitle: 'Rule-Engine & Quality Assurance',
-      purpose: 'Strict business rule validation and anomaly rejection.',
-      description: 'Executes strict quality checks to reject negative gas concentrations, out-of-range sensor timestamps, missing IDs, or non-integer crew counts.',
-      phase: 'Phase 2 Validator',
+      code: 'Stage 2',
+      title: 'Validate Inputs',
+      subtitle: 'Multi-Source Ingestion Gateway & QA Checks',
+      purpose: 'Centralized protocol gateway and packet quality checks.',
+      description: 'Aggregates disparate industrial payloads and executes strict quality checks to reject invalid sensor boundaries or corrupted metrics.',
+      phase: 'Quality Assurance',
       icon: <ShieldCheck className="w-5 h-5" />,
       samplePayload: `{ "isValid": true, "totalChecked": 42, "errorCount": 0, "warningCount": 0, "issues": [], "validationRulesApplied": ["NON_NEGATIVE_GAS", "VALID_SHIFT_ROSTER"] }`
     },
     {
-      id: 4,
-      code: 'ST-04',
-      title: 'Normalization',
+      id: 3,
+      code: 'Stage 3',
+      title: 'Normalize Data',
       subtitle: 'Standardized Units & Schema Alignment',
       purpose: 'Universal schema alignment and metric standard conversions.',
-      description: 'Converts legacy sensor units to enterprise standards (e.g., gas_ppm -> gasConcentration) and aligns schema names across SAP and SCADA systems.',
-      phase: 'Phase 2 Normalizer',
+      description: 'Converts legacy sensor units to enterprise standards and aligns schema names across SAP and SCADA systems.',
+      phase: 'Standardization',
       icon: <Cpu className="w-5 h-5" />,
       samplePayload: `{ "sensors": [{ "id": "scada-gas-101", "currentValue": 1.4, "unit": "PPM", "status": "safe" }], "operational": { "workersPresent": 142, "shiftCode": "SHIFT-A" } }`
     },
     {
-      id: 5,
-      code: 'ST-05',
-      title: 'Unified Plant Model',
+      id: 4,
+      code: 'Stage 4',
+      title: 'Build Unified Plant Model',
       subtitle: 'Single Enterprise Data Backbone',
       purpose: 'Synthesizes all domain records into one master enterprise object.',
       description: 'Creates the singular source of truth (`UnifiedPlantModel`) that powers all downstream intelligence, risk maps, and control room visualizations.',
-      phase: 'Phase 2 Model',
+      phase: 'Data Backbone',
       icon: <Layers className="w-5 h-5" />,
       samplePayload: `{ "plant": { "code": "SIPC-A", "overallStatus": "ONLINE - NORMAL" }, "worker": { "workersPresent": 142 }, "sensor": { "totalSensors": 1420 } }`
     },
     {
-      id: 6,
-      code: 'ST-06',
-      title: 'Operational Context',
-      subtitle: 'Spatial Activity Correlation',
+      id: 5,
+      code: 'Stage 5',
+      title: 'Evaluate Safety Rules',
+      subtitle: 'Deterministic Engineering Rule Evaluation',
       purpose: 'Correlates physical work permits with equipment maintenance arrays.',
-      description: 'Cross-references active high-risk work permits with maintenance overhauls and ambient gas readings using 52 deterministic engineering rules to establish true explainable operational context.',
-      phase: 'Phase 3 Active Engine',
-      isLocked: false,
+      description: 'Cross-references active high-risk work permits with maintenance overhauls and ambient gas readings using 52 deterministic engineering rules.',
+      phase: 'Rule Evaluation',
       icon: <BrainCircuit className="w-5 h-5" />,
-      samplePayload: `{ "contextId": "CTX-CRITICAL-L92K", "scenario": "${scenario}", "confidence": 99, "rulesEvaluated": 52, "rulesTriggered": 11, "compoundRules": 4, "observationsCount": 8, "status": "CRITICAL ALERT - HIGH RISK" }`
+      samplePayload: `{ "rulesEvaluated": 52, "rulesTriggered": 11, "compoundRules": 4, "status": "VIOLATION DETECTED" }`
+    },
+    {
+      id: 6,
+      code: 'Stage 6',
+      title: 'Build Operational Context',
+      subtitle: 'Cross-Domain Relationship Mapping',
+      purpose: 'Establishes explainable dependency links between plant events.',
+      description: 'Maps causal links connecting atmospheric anomalies, equipment state degradation, and workforce proximity into clear explainable chains.',
+      phase: 'Relationship Mapping',
+      icon: <Database className="w-5 h-5" />,
+      samplePayload: `{ "relationships": [{ "source": "Tank Farm 4", "target": "Compressor Unit B", "type": "ATMOSPHERIC_FLOW" }], "totalLinks": 14 }`
     },
     {
       id: 7,
-      code: 'ST-07',
-      title: 'Compound Risk Intelligence',
-      subtitle: 'AI Cascading Failure Prediction',
-      purpose: 'Predicts multi-variable cascading risk escalation probabilities.',
-      description: 'Computes compound risk scores using multi-domain correlation matrices, triggering automated safety recommendations across plant zones.',
-      phase: 'Phase 4 Locked',
-      isLocked: true,
+      code: 'Stage 7',
+      title: 'Calculate Compound Risk',
+      subtitle: 'Overall & Zone Risk Index Calculation',
+      purpose: 'Predicts cascading risk escalation and overall risk score.',
+      description: 'Computes overall risk score (0-100) using multi-domain correlation matrices, setting zone safety thresholds across Sector Alpha and Terminal.',
+      phase: 'Risk Calculation',
       icon: <Flame className="w-5 h-5" />,
-      samplePayload: `[RESERVED FOR PHASE 4: AI predictive probability vectors & automated containment triggers]`
+      samplePayload: `{ "overallRiskScore": 88, "zoneStatus": "CRITICAL", "cascadingRiskProbability": "HIGH" }`
     },
     {
       id: 8,
-      code: 'ST-08',
-      title: 'Industrial Dashboard',
-      subtitle: 'Control Room Telemetry UI',
-      purpose: 'Sub-second visual presentation for enterprise operators and judges.',
-      description: 'Delivers explainable, real-time industrial intelligence to control room operators through maps, sensor grids, and compound risk charts.',
-      phase: 'Phase 1 Active UI',
+      code: 'Stage 8',
+      title: 'Operational Context Ready',
+      subtitle: 'Control Room Synthesis & AI Handshake',
+      purpose: 'Sub-second structured operational context delivery.',
+      description: 'Generates the structured JSON context payload ready for control room operators and instant analysis by the Explainable AI Risk Analysis engine.',
+      phase: 'Context Generation',
       icon: <Activity className="w-5 h-5" />,
-      samplePayload: `{ "currentView": "DashboardView", "selectedScenario": "${scenario}", "synchronizationStatus": "VERIFIED", "latency": "12ms" }`
+      samplePayload: `{ "currentView": "Control Room", "selectedScenario": "${scenario}", "synchronizationStatus": "VERIFIED", "latency": "12ms" }`
     }
   ];
 
@@ -272,7 +278,7 @@ export const InteractivePipelineInspector: React.FC<PipelineInspectorProps> = ({
     // ST-07: Compound Risk Intelligence (4800ms to 5400ms)
     timers.push(setTimeout(() => {
       setStageStatuses(prev => ({ ...prev, 6: 'completed', 7: 'running' }));
-      setActiveStatusMessage('Verifying Compound Risk Probability Vectors (Phase 4)...');
+      setActiveStatusMessage('Verifying Compound Risk Probability Vectors...');
       setPacketsCount(1420);
       setSelectedStage(7);
     }, 4800));
@@ -316,7 +322,7 @@ export const InteractivePipelineInspector: React.FC<PipelineInspectorProps> = ({
             </span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-mono font-extrabold text-slate-100 tracking-tight">
-            Data Integration Pipeline Inspector
+            Plant Intelligence Pipeline
           </h2>
           <p className="text-sm text-slateBlue-300 font-sans max-w-2xl">
             Examine real-time data flows, natural timing synchronization, and enterprise schema construction across the 8-stage architecture.
@@ -373,51 +379,82 @@ export const InteractivePipelineInspector: React.FC<PipelineInspectorProps> = ({
           PART 2 & PART 4: LIVE PIPELINE STATUS & METRICS COUNTERS
       ========================================================= */}
       {isProcessing && (
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 animate-in fade-in zoom-in-95 duration-300">
-          {/* Status Message Pill (PART 2) */}
-          <div className="lg:col-span-1 bg-carbon-900 border border-industrial-cyan/50 rounded-2xl p-5 flex flex-col justify-between shadow-glow-safe/10">
-            <div className="flex items-center gap-2 text-[11px] font-mono font-bold uppercase text-industrial-cyan">
-              <span className="w-2 h-2 rounded-full bg-industrial-cyan animate-ping" />
-              <span>ACTIVE STAGE STATUS</span>
+        <div className="space-y-4 animate-in fade-in zoom-in-95 duration-300">
+          {/* Full-width Pipeline Progress Bar & Execution Timings (PART 12) */}
+          <div className="bg-carbon-900 border-2 border-industrial-cyan/60 rounded-2xl p-5 shadow-glow-safe/15 space-y-3 font-mono">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="flex items-center gap-2.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-industrial-cyan animate-ping" />
+                <span className="text-xs font-black uppercase tracking-wider text-industrial-cyan">
+                  Current Stage: Stage {selectedStage} — {activeStageObj.title}
+                </span>
+              </div>
+              <div className="flex items-center gap-4 text-xs text-slateBlue-300 font-bold">
+                <span>Completed: <strong className="text-slate-100">{Object.values(stageStatuses).filter(s => s === 'completed').length}</strong> of 8 stages</span>
+                <span>Est. processing time: <strong className="text-cyan-300">~6.0s</strong></span>
+              </div>
             </div>
-            <div className="py-2 text-sm font-mono font-extrabold text-slate-100 tracking-wide animate-pulse">
-              {activeStatusMessage}
-            </div>
-            <div className="text-[10px] font-mono text-slateBlue-400">
-              {isFinishing ? 'FINALIZING PIPELINE SWEEP' : 'SIEMENS / HONEYWELL PROTOCOL'}
+
+            <div className="space-y-1.5">
+              <div className="flex justify-between text-xs font-bold text-slateBlue-400">
+                <span>Pipeline Processing Activity ({activeStatusMessage})</span>
+                <span className="text-industrial-cyan">{Math.round((selectedStage / 8) * 100)}%</span>
+              </div>
+              <div className="w-full h-2.5 bg-carbon-950 rounded-full border border-slateBlue-800 overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-industrial-cyan via-cyan-400 to-emerald-400 transition-all duration-500 shadow-glow-safe"
+                  style={{ width: `${Math.round((selectedStage / 8) * 100)}%` }}
+                />
+              </div>
             </div>
           </div>
 
-          {/* Metric 1: Packets Processed (PART 4) */}
-          <div className="bg-carbon-900 border border-slateBlue-800 rounded-2xl p-5 flex flex-col justify-between shadow-inner">
-            <span className="text-[11px] font-mono text-slateBlue-400 font-bold uppercase">Packets Processed</span>
-            <div className="text-2xl sm:text-3xl font-mono font-extrabold text-cyan-300 tracking-tight transition-all duration-300">
-              {packetsCount.toLocaleString()}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            {/* Status Message Pill */}
+            <div className="lg:col-span-1 bg-carbon-900 border border-industrial-cyan/50 rounded-2xl p-5 flex flex-col justify-between shadow-glow-safe/10">
+              <div className="flex items-center gap-2 text-[11px] font-mono font-bold uppercase text-industrial-cyan">
+                <span className="w-2 h-2 rounded-full bg-industrial-cyan animate-ping" />
+                <span>ACTIVE STAGE STATUS</span>
+              </div>
+              <div className="py-2 text-sm font-mono font-extrabold text-slate-100 tracking-wide animate-pulse">
+                {activeStatusMessage}
+              </div>
+              <div className="text-[10px] font-mono text-slateBlue-400">
+                {isFinishing ? 'FINALIZING PIPELINE SWEEP' : 'SIEMENS / HONEYWELL PROTOCOL'}
+              </div>
             </div>
-            <span className="text-[10px] font-mono text-industrial-safe flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-industrial-safe" /> STREAMING ACTIVE
-            </span>
-          </div>
 
-          {/* Metric 2: Sources Connected (PART 4) */}
-          <div className="bg-carbon-900 border border-slateBlue-800 rounded-2xl p-5 flex flex-col justify-between shadow-inner">
-            <span className="text-[11px] font-mono text-slateBlue-400 font-bold uppercase">Sources Connected</span>
-            <div className="text-2xl sm:text-3xl font-mono font-extrabold text-slate-100 tracking-tight transition-all duration-300">
-              {sourcesConnected} <span className="text-base text-slateBlue-500">/ 8</span>
+            {/* Metric 1: Packets Processed */}
+            <div className="bg-carbon-900 border border-slateBlue-800 rounded-2xl p-5 flex flex-col justify-between shadow-inner">
+              <span className="text-[11px] font-mono text-slateBlue-400 font-bold uppercase">Packets Processed</span>
+              <div className="text-2xl sm:text-3xl font-mono font-extrabold text-cyan-300 tracking-tight transition-all duration-300">
+                {packetsCount.toLocaleString()}
+              </div>
+              <span className="text-[10px] font-mono text-industrial-safe flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-industrial-safe" /> STREAMING ACTIVE
+              </span>
             </div>
-            <span className="text-[10px] font-mono text-slateBlue-400">
-              SCADA / SAP Gateways
-            </span>
-          </div>
 
-          {/* Metric 3: Validation Progress (PART 4) */}
-          <div className="bg-carbon-900 border border-slateBlue-800 rounded-2xl p-5 flex flex-col justify-between shadow-inner">
-            <span className="text-[11px] font-mono text-slateBlue-400 font-bold uppercase">Validation Progress</span>
-            <div className="text-2xl sm:text-3xl font-mono font-extrabold text-industrial-safe tracking-tight transition-all duration-300">
-              {validationProgress}%
+            {/* Metric 2: Sources Connected */}
+            <div className="bg-carbon-900 border border-slateBlue-800 rounded-2xl p-5 flex flex-col justify-between shadow-inner">
+              <span className="text-[11px] font-mono text-slateBlue-400 font-bold uppercase">Sources Connected</span>
+              <div className="text-2xl sm:text-3xl font-mono font-extrabold text-slate-100 tracking-tight transition-all duration-300">
+                {sourcesConnected} <span className="text-base text-slateBlue-500">/ 8</span>
+              </div>
+              <span className="text-[10px] font-mono text-slateBlue-400">
+                SCADA / SAP Gateways
+              </span>
             </div>
-            <div className="w-full h-1 rounded-full bg-carbon-950 overflow-hidden border border-slateBlue-800 mt-1">
-              <div className="h-full bg-industrial-safe transition-all duration-300" style={{ width: `${validationProgress}%` }} />
+
+            {/* Metric 3: Validation Progress */}
+            <div className="bg-carbon-900 border border-slateBlue-800 rounded-2xl p-5 flex flex-col justify-between shadow-inner">
+              <span className="text-[11px] font-mono text-slateBlue-400 font-bold uppercase">Validation Progress</span>
+              <div className="text-2xl sm:text-3xl font-mono font-extrabold text-industrial-safe tracking-tight transition-all duration-300">
+                {validationProgress}%
+              </div>
+              <div className="w-full h-1 rounded-full bg-carbon-950 overflow-hidden border border-slateBlue-800 mt-1">
+                <div className="h-full bg-industrial-safe transition-all duration-300" style={{ width: `${validationProgress}%` }} />
+              </div>
             </div>
           </div>
         </div>
@@ -535,12 +572,12 @@ export const InteractivePipelineInspector: React.FC<PipelineInspectorProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h4 className="text-base font-mono font-extrabold text-slate-100 uppercase tracking-wide">
-                  Pipeline Completed &amp; Dashboard Synchronized
+                  Pipeline Complete: Operational Context Generated
                 </h4>
                 <Badge variant="safe" className="font-mono text-[10px]">VERIFIED ✓</Badge>
               </div>
               <p className="text-xs text-slateBlue-300 font-sans mt-0.5">
-                All 8 industrial telemetry stages verified. Control room widgets have visibly synchronized with master model.
+                All 8 industrial telemetry stages verified. Plant status and risk scores updated. Ready for AI Risk Analysis.
               </p>
             </div>
           </div>
@@ -908,7 +945,7 @@ export const InteractivePipelineInspector: React.FC<PipelineInspectorProps> = ({
             <div className="flex items-center justify-between border-b border-slateBlue-800/80 pb-3">
               <span className="font-mono text-xs font-bold uppercase tracking-wide text-industrial-cyan flex items-center gap-2">
                 <BrainCircuit className="w-4 h-4 text-industrial-cyan animate-pulse" />
-                Deterministic Engineering Rule Evaluation (Phase 3 Active Engine)
+                Deterministic Engineering Rule Evaluation (Active Engine)
               </span>
               <span className="text-[11px] font-mono text-slateBlue-400">
                 {evaluatedRuleChecks.length > 0 ? `${evaluatedRuleChecks.length} / 8 Rules Evaluated` : 'Click "Run Complete Simulation" to watch live execution'}

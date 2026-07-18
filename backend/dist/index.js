@@ -44,11 +44,16 @@ app.get('/health', (_req, res) => {
         timestamp: new Date().toISOString()
     });
 });
+const telemetryController_1 = require("./controllers/telemetryController");
 // PART 2 & PART 4: Explicit Route Registration (guarantee exact matches across all environments & prefixes)
 app.use('/api/ai', aiRoutes_1.default);
 app.use('/ai', aiRoutes_1.default);
 app.use('/api/pipeline', pipeline_1.default);
 app.use('/pipeline', pipeline_1.default);
+app.post('/api/simulate', telemetryController_1.simulateCustomScenario);
+app.post('/simulate', telemetryController_1.simulateCustomScenario);
+app.post('/api/pipeline/simulate', telemetryController_1.simulateCustomScenario);
+app.post('/pipeline/simulate', telemetryController_1.simulateCustomScenario);
 app.use('/api', api_1.default);
 // Health & Info endpoint
 app.get('/', (_req, res) => {
@@ -108,6 +113,7 @@ app.listen(PORT, () => {
     console.log(`✓ GET  /api/context`);
     console.log(`✓ POST /api/ai/analyze (Phase 4 Explainable AI Compound Risk Engine)`);
     console.log(`✓ POST /ai/analyze     (Direct Alias)`);
+    console.log(`✓ POST /api/simulate   (Phase 5 Interactive Scenario Builder Simulation)`);
     console.log(`====================================================================\n`);
 });
 exports.default = app;

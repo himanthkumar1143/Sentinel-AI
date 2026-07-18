@@ -44,11 +44,17 @@ app.get('/health', (_req, res) => {
   });
 });
 
+import { simulateCustomScenario } from './controllers/telemetryController';
+
 // PART 2 & PART 4: Explicit Route Registration (guarantee exact matches across all environments & prefixes)
 app.use('/api/ai', aiRoutes);
 app.use('/ai', aiRoutes);
 app.use('/api/pipeline', pipelineRoutes);
 app.use('/pipeline', pipelineRoutes);
+app.post('/api/simulate', simulateCustomScenario);
+app.post('/simulate', simulateCustomScenario);
+app.post('/api/pipeline/simulate', simulateCustomScenario);
+app.post('/pipeline/simulate', simulateCustomScenario);
 app.use('/api', apiRoutes);
 
 // Health & Info endpoint
@@ -111,6 +117,7 @@ app.listen(PORT, () => {
   console.log(`✓ GET  /api/context`);
   console.log(`✓ POST /api/ai/analyze (Phase 4 Explainable AI Compound Risk Engine)`);
   console.log(`✓ POST /ai/analyze     (Direct Alias)`);
+  console.log(`✓ POST /api/simulate   (Phase 5 Interactive Scenario Builder Simulation)`);
   console.log(`====================================================================\n`);
 });
 

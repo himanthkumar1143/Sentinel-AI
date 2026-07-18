@@ -100,6 +100,16 @@ export class GeminiService {
       analysisCache.clear();
     }
   }
+
+  /**
+   * Gets a cached report if it exists
+   */
+  public getCachedReport(context: any): AIAnalysisReport | undefined {
+    if (!context) return undefined;
+    const cacheKey = `${context.scenario || 'normal'}_${context.contextId || 'default'}`;
+    return analysisCache.get(cacheKey);
+  }
+
 }
 
 export const geminiService = new GeminiService();

@@ -25,7 +25,7 @@ export const RuleDistributionWidget: React.FC<RuleDistributionWidgetProps> = ({ 
         <div className="flex items-center justify-between border-b border-slateBlue-800/80 pb-3">
           <div className="flex items-center gap-2 text-xs font-mono font-bold text-slate-100 uppercase tracking-wide">
             <BarChart3 className="w-4 h-4 text-industrial-cyan" />
-            <span>Observation Severity Distribution (Part 15)</span>
+            <span>Observation Severity Distribution</span>
           </div>
           <span className="text-xs font-mono text-slateBlue-400">Total: {total} Cards</span>
         </div>

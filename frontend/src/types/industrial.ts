@@ -1,4 +1,4 @@
-export type ScenarioType = 'normal' | 'warning' | 'critical';
+export type ScenarioType = 'normal' | 'warning' | 'critical' | 'custom';
 
 export type StatusLevel = 'safe' | 'warning' | 'critical' | 'maintenance';
 export type TrendDirection = 'up' | 'down' | 'stable';

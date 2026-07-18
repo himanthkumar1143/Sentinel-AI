@@ -186,6 +186,13 @@ export const OperationalContextIntelligencePanel: React.FC<OperationalContextInt
   const [aiReport, setAiReport] = useState<AIAnalysisReport | null>(null);
   const [isLoadingAI, setIsLoadingAI] = useState<boolean>(false);
   const [aiError, setAiError] = useState<string | null>(null);
+  const [showOcHelper, setShowOcHelper] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('sentinel_seen_oc_tooltip') !== 'true';
+    } catch {
+      return true;
+    }
+  });
 
   // Reset AI report when scenario or context ID changes (PART 11)
   useEffect(() => {
@@ -257,7 +264,7 @@ export const OperationalContextIntelligencePanel: React.FC<OperationalContextInt
       <Card className="border-slateBlue-800 bg-carbon-900/60 p-12 text-center flex flex-col items-center justify-center space-y-4 shadow-panel">
         <div className="w-10 h-10 rounded-full border-4 border-industrial-cyan border-t-transparent animate-spin shadow-glow-safe" />
         <p className="font-mono text-sm uppercase tracking-widest text-slateBlue-300 animate-pulse">
-          Correlating Multi-Domain Operational Context Intelligence (Phase 3 Engine)...
+          Correlating Multi-Domain Operational Context Intelligence...
         </p>
       </Card>
     );
@@ -300,10 +307,10 @@ export const OperationalContextIntelligencePanel: React.FC<OperationalContextInt
               <span className="w-2.5 h-2.5 rounded-full bg-industrial-cyan animate-pulse shadow-glow-safe" />
               <h2 className="text-xl sm:text-2xl font-mono font-extrabold text-slate-100 uppercase tracking-tight flex items-center gap-2">
                 <BrainCircuit className="w-6 h-6 text-industrial-cyan" />
-                Operational Context Intelligence Engine
+                Operational Context Engine
               </h2>
               <Badge className="bg-industrial-cyan text-carbon-950 font-mono text-xs font-bold px-2.5">
-                PHASE 3 ACTIVE
+                CONTEXT ACTIVE
               </Badge>
             </div>
             <p className="text-xs sm:text-sm font-sans text-slateBlue-300 max-w-3xl leading-relaxed">
@@ -318,6 +325,30 @@ export const OperationalContextIntelligencePanel: React.FC<OperationalContextInt
           </div>
         </CardContent>
       </Card>
+
+      {/* PART 3: One-Time Operational Context Explanation Tooltip / Helper Card */}
+      {showOcHelper && (
+        <div className="bg-gradient-to-r from-slateBlue-900/90 via-carbon-900 to-carbon-900 border-2 border-industrial-cyan/80 rounded-2xl p-5 shadow-[0_0_30px_rgba(6,182,212,0.2)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-in fade-in slide-in-from-top duration-300 relative">
+          <div className="space-y-1.5 max-w-4xl">
+            <div className="flex items-center gap-2 font-mono text-xs font-black uppercase tracking-wider text-industrial-cyan">
+              <Sparkles className="w-4 h-4 text-industrial-cyan animate-pulse" />
+              <span>Core Innovation of SentinelAI: Operational Context</span>
+            </div>
+            <p className="text-xs sm:text-sm font-sans text-slate-100 font-medium leading-relaxed italic">
+              &ldquo;A unified understanding of plant conditions created by combining telemetry, maintenance, permits, workforce, and environmental information into one operational picture.&rdquo;
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              setShowOcHelper(false);
+              try { localStorage.setItem('sentinel_seen_oc_tooltip', 'true'); } catch {}
+            }}
+            className="px-4 py-2 rounded-xl bg-industrial-cyan/20 hover:bg-industrial-cyan/30 text-industrial-cyan border border-industrial-cyan/50 font-mono text-xs font-extrabold uppercase transition-all shrink-0 shadow-glow-safe/20"
+          >
+            Got It ✓
+          </button>
+        </div>
+      )}
 
       {/* =========================================================
           PART 15 PROGRESSIVE INFORMATION HIERARCHY (STEPS 1 - 11)
@@ -436,12 +467,12 @@ export const OperationalContextIntelligencePanel: React.FC<OperationalContextInt
       </section>
 
       {/* =========================================================
-          PHASE 4: AI COMPOUND RISK INTELLIGENCE ENGINE
+          AI COMPOUND RISK INTELLIGENCE ENGINE
       ========================================================= */}
       <section className="space-y-3 pt-4 border-t border-slateBlue-800/80">
         <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-industrial-cyan px-1">
           <Sparkles className="w-4 h-4 animate-pulse text-amber-400" />
-          <span>PHASE 4: EXPLAINABLE AI COMPOUND RISK INTELLIGENCE ENGINE (GOOGLE GEMINI)</span>
+          <span>EXPLAINABLE AI RISK ANALYSIS (GOOGLE GEMINI)</span>
         </div>
         <AICompoundRiskIntelligencePanel
           report={aiReport}
@@ -460,7 +491,7 @@ export const OperationalContextIntelligencePanel: React.FC<OperationalContextInt
 /**
  * Constructs a rich, verified OperationalContextPayload fallback for immediate presentation
  */
-function buildFallbackContext(scenario: string): OperationalContextPayload {
+export function buildFallbackContext(scenario: string): OperationalContextPayload {
   const isCritical = scenario === 'critical';
   const isWarning = scenario === 'warning';
 

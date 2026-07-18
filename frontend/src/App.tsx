@@ -35,6 +35,11 @@ export const App: React.FC = () => {
     setCurrentScenario(newScenario);
   };
 
+  const handleApplyCustomScenario = (customData: IndustrialScenarioPayload) => {
+    setData(customData);
+    setCurrentScenario('custom');
+  };
+
   const handleLaunchDashboard = (initialScenario?: ScenarioType) => {
     if (initialScenario && initialScenario !== currentScenario) {
       setCurrentScenario(initialScenario);
@@ -63,8 +68,8 @@ export const App: React.FC = () => {
   }
 
   return (
-    <div className={`min-h-screen bg-carbon-900 text-slateBlue-300 flex flex-col font-sans selection:bg-industrial-steel selection:text-carbon-900 transition-opacity duration-300 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
-      {/* Top Bar with Live Telemetry Clock & Plant Status Pill */}
+    <div className={`min-h-screen bg-carbon-900 text-slateBlue-300 flex flex-col font-sans selection:bg-industrial-steel selection:text-carbon-900 transition-opacity duration-300 ${isTransitioning ? 'opacity-0' : 'opacity-100'} text-[1.05em] leading-relaxed`}>
+      {/* Top Bar with Live Telemetry Clock, Plant Status Pill & Presentation Mode Toggle */}
       {data && (
         <TopBar
           overview={data.overview}
@@ -87,6 +92,8 @@ export const App: React.FC = () => {
             data={data}
             currentScenario={currentScenario}
             onSelectScenario={handleSelectScenario}
+            onApplyCustomScenario={handleApplyCustomScenario}
+            onSelectWorkspace={setActiveWorkspace}
             loading={loading}
             activeWorkspace={activeWorkspace}
           />

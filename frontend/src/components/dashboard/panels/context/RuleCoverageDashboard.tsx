@@ -28,7 +28,7 @@ export const RuleCoverageDashboard: React.FC<RuleCoverageDashboardProps> = ({ co
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slateBlue-800/80 pb-3">
           <div className="flex items-center gap-2 text-sm font-mono font-bold text-slate-100 uppercase tracking-wide">
             <BrainCircuit className="w-4 h-4 text-industrial-safe" />
-            <span>Engineering Rule Coverage Dashboard (Part 16)</span>
+            <span>Engineering Rule Coverage Dashboard</span>
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="border-industrial-safe/40 text-industrial-safe font-mono text-xs">

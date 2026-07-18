@@ -61,16 +61,14 @@ export const ObservationCardsList: React.FC<ObservationCardsListProps> = ({
     );
   }
 
-  const hasAnySelection = !!(selectedObservationId || selectedNodeId);
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between text-xs font-mono text-slateBlue-400 px-1">
         <span className="font-bold uppercase tracking-wide text-slate-200 flex items-center gap-2">
           <GitBranch className="w-4 h-4 text-industrial-cyan" />
-          <span>● SYNTHESIZED OBSERVATIONS &amp; EXPLAINABILITY DEPENDENCY TREES (PART 12)</span>
+          <span>● Detected Issues &amp; Root Cause Chain</span>
         </span>
-        <span>Click card to inspect &amp; synchronize with Correlation Diagram</span>
+        <span>Click card to inspect details</span>
       </div>
 
       <div className="grid grid-cols-1 gap-4">
@@ -101,9 +99,7 @@ export const ObservationCardsList: React.FC<ObservationCardsListProps> = ({
             : 'border-slateBlue-800 bg-carbon-900/90 hover:border-slateBlue-600';
 
           const selectionStyle = isSelected
-            ? 'ring-2 ring-industrial-cyan shadow-[0_0_25px_rgba(34,211,238,0.5)] scale-[1.01] z-10'
-            : hasAnySelection
-            ? 'opacity-30 transition-all duration-250'
+            ? 'ring-1 ring-industrial-cyan shadow-md z-10'
             : '';
 
           const SeverityIcon = isCritical ? ShieldAlert : isWarning ? AlertTriangle : Info;

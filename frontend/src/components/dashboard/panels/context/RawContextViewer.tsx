@@ -25,7 +25,7 @@ export const RawContextViewer: React.FC<RawContextViewerProps> = ({ context }) =
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slateBlue-800/80 pb-3">
           <div className="flex items-center gap-2 text-sm font-mono font-bold text-slate-100 uppercase tracking-wide">
             <Terminal className="w-4 h-4 text-industrial-cyan" />
-            <span>Raw Operational Context JSON Payload (Part 18)</span>
+            <span>Raw Operational Context JSON Payload</span>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -48,7 +48,7 @@ export const RawContextViewer: React.FC<RawContextViewerProps> = ({ context }) =
         {isExpanded && (
           <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
             <div className="flex items-center justify-between text-[11px] font-mono text-slateBlue-400 px-1">
-              <span>SCHEMA: SENTINEL-AI PHASE 3 OPERATIONAL CONTEXT INTELLIGENCE ENGINE</span>
+              <span>SCHEMA: SENTINEL-AI ENTERPRISE OPERATIONAL CONTEXT ENGINE</span>
               <span className="text-cyan-400 font-semibold">{jsonString.length.toLocaleString()} BYTES</span>
             </div>
             <pre className="bg-carbon-950 border border-slateBlue-800 rounded-xl p-4 sm:p-5 text-xs font-mono text-cyan-300 overflow-x-auto max-h-[520px] leading-relaxed shadow-inner selection:bg-cyan-500 selection:text-carbon-950">

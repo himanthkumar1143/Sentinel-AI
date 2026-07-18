@@ -24,6 +24,13 @@ export const SCENARIO_INFOS: Record<ScenarioType, ScenarioInfo> = {
     badge: 'CRITICAL ALERT - HIGH RISK',
     description: 'Simultaneous thermal excursion and gas leak across Tank Farm & Reactor Unit C. Compound risk threshold exceeded.',
     simulationNotes: 'High-severity compound risk state. Containment dampers engaged; hot work permits automatically revoked.'
+  },
+  custom: {
+    id: 'custom',
+    name: 'Custom Scenario Simulation',
+    badge: 'CUSTOM SIMULATION',
+    description: 'Interactive user-generated industrial simulation across all process units.',
+    simulationNotes: 'Arbitrary operating parameters simulated through Stage 3 Operational Context Intelligence Engine.'
   }
 };
 
@@ -851,31 +858,157 @@ export const FALLBACK_SCENARIOS: Record<ScenarioType, IndustrialScenarioPayload>
       { time: '20:00', riskIndex: 88, safetyThreshold: 35, warningThreshold: 65, criticalThreshold: 85 },
       { time: '22:00', riskIndex: 89, safetyThreshold: 35, warningThreshold: 65, criticalThreshold: 85 }
     ]
+  },
+  custom: {
+    scenario: SCENARIO_INFOS.custom,
+    overview: {
+      overallStatus: 'ONLINE - NORMAL',
+      statusColor: 'safe',
+      compoundRiskIndex: 25,
+      activeAlertsCount: 1,
+      workersOnSite: 142,
+      activeMaintenanceJobs: 2,
+      lastUpdated: new Date().toISOString()
+    },
+    sensors: [
+      {
+        id: 'sens-gas-cust',
+        name: 'Gas Concentration (Custom)',
+        category: 'gas',
+        currentValue: 1.4,
+        unit: 'PPM',
+        status: 'safe',
+        trend: 'stable',
+        trendLabel: 'Nominal Baseline (+0.1 PPM/hr)',
+        history: [1.2, 1.3, 1.2, 1.4, 1.3, 1.4, 1.4, 1.3, 1.4, 1.4],
+        thresholds: { warning: 10.0, critical: 25.0 }
+      }
+    ],
+    zones: [],
+    operationalStatus: {
+      maintenanceStatus: '2 Active Jobs',
+      permitStatus: 'Hot Work (1 Active), Confined Space (Nominal)',
+      currentShift: 'Shift A (06:00 - 14:00)',
+      equipmentOperationalPct: 96.5,
+      workersPresent: 142,
+      activeChecklists: 16
+    },
+    timeline: [],
+    recommendations: [],
+    riskTrend: [
+      { time: '00:00', riskIndex: 20, safetyThreshold: 35, warningThreshold: 65, criticalThreshold: 85 },
+      { time: '12:00', riskIndex: 25, safetyThreshold: 35, warningThreshold: 65, criticalThreshold: 85 },
+      { time: '22:00', riskIndex: 25, safetyThreshold: 35, warningThreshold: 65, criticalThreshold: 85 }
+    ]
   }
 };
 
 export async function fetchTelemetryScenario(scenario: ScenarioType): Promise<IndustrialScenarioPayload> {
+  if (scenario === 'custom' && FALLBACK_SCENARIOS.custom) {
+    return FALLBACK_SCENARIOS.custom;
+  }
   try {
     const response = await fetch(`${API_BASE_URL}/payload?scenario=${scenario}`);
     if (response.ok) {
       const data = await response.json();
       return data as IndustrialScenarioPayload;
     }
-  } catch (_err) {
-    // Backend offline or sleeping, silently fallback to exact mock dataset
+  } catch (err) {
+    console.warn(`[API Service] Failed to fetch payload for scenario "${scenario}". Using offline fallback dataset.`, err);
   }
-  return FALLBACK_SCENARIOS[scenario];
+  return FALLBACK_SCENARIOS[scenario] || FALLBACK_SCENARIOS.normal;
 }
+
+export async function simulateScenarioAPI(upm: any): Promise<IndustrialScenarioPayload> {
+  try {
+    const targetUrl = API_BASE_URL.replace(/\/+$/, '').endsWith('/api')
+      ? `${API_BASE_URL.replace(/\/+$/, '')}/simulate`
+      : `${API_BASE_URL.replace(/\/+$/, '')}/api/simulate`;
+      
+    const response = await fetch(targetUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ unifiedPlantModel: upm })
+    });
+    if (response.ok) {
+      const result = await response.json();
+      if (result && result.data) {
+        FALLBACK_SCENARIOS.custom = result.data;
+        return result.data;
+      }
+    }
+  } catch (err) {
+    console.warn('[API Service] Backend simulation fetch failed. Using deterministic local simulation fallback.', err);
+  }
+  
+  // Deterministic local simulation fallback if backend server is not running during offline mode
+  const statusColor = upm.plant?.statusColor || 'safe';
+  const baseMock = statusColor === 'critical' ? FALLBACK_SCENARIOS.critical : statusColor === 'warning' ? FALLBACK_SCENARIOS.warning : FALLBACK_SCENARIOS.normal;
+  
+  const localPayload: IndustrialScenarioPayload = {
+    ...baseMock,
+    scenario: SCENARIO_INFOS.custom,
+    overview: {
+      ...baseMock.overview,
+      overallStatus: upm.plant?.overallStatus || 'ONLINE - NORMAL',
+      statusColor: upm.plant?.statusColor || 'safe',
+      compoundRiskIndex: upm.plant?.compoundRiskIndex || 25,
+      activeAlertsCount: (upm.operationalContext?.observations || []).length,
+      workersOnSite: upm.worker?.workersPresent || 142,
+      activeMaintenanceJobs: upm.maintenance?.totalActiveJobs || 0,
+      lastUpdated: new Date().toISOString()
+    },
+    sensors: (upm.sensor?.list || []).map((s: any) => ({
+      id: s.id,
+      name: s.name,
+      category: s.category,
+      currentValue: s.value,
+      unit: s.unit,
+      status: s.status,
+      trend: s.trend,
+      trendLabel: `${s.status?.toUpperCase() || 'SAFE'} (${s.value} ${s.unit})`,
+      history: [Number((s.value * 0.9).toFixed(1)), Number((s.value * 0.95).toFixed(1)), s.value, Number((s.value * 1.02).toFixed(1)), Number((s.value * 0.98).toFixed(1)), s.value],
+      thresholds: { warning: Number((s.value * 1.2).toFixed(1)), critical: Number((s.value * 1.5).toFixed(1)) }
+    })),
+    zones: upm.zones || baseMock.zones,
+    operationalStatus: {
+      maintenanceStatus: upm.maintenance?.totalActiveJobs > 0 ? `${upm.maintenance.totalActiveJobs} Active Jobs` : 'Nominal Maintenance',
+      permitStatus: upm.permit?.statusSummary || 'Nominal Permits',
+      currentShift: upm.worker?.shiftCode || 'Shift A',
+      equipmentOperationalPct: upm.operational?.equipmentOperationalPct || 98.4,
+      workersPresent: upm.worker?.workersPresent || 142,
+      activeChecklists: upm.operational?.activeChecklistsCount || 14
+    },
+    timeline: upm.timeline || baseMock.timeline,
+    recommendations: upm.recommendations || baseMock.recommendations
+  };
+  if (upm.operationalContext) {
+    (localPayload as any).operationalContext = upm.operationalContext;
+  }
+  FALLBACK_SCENARIOS.custom = localPayload;
+  return localPayload;
+}
+
 
 export async function fetchAIRiskAssessment(context: any, forceRefresh = false, useFallback = false): Promise<any> {
   try {
-    // PART 2 & PART 3 — Remove unnecessary presentation/UI arrays and send minimal AI reasoning request
+    // PART 2 & PART 3 — Remove unnecessary presentation/UI arrays and send minimal AI reasoning request (< 10 KB)
+    // Strip out spatialCorrelations, timelineActivity, correlation diagrams, UI state, animation state, React component data, raw JSON viewer data, rule inspector tables, visualization metadata
+    const rawStats = context?.domainStats || context?.statistics || {};
+    const cleanStats: Record<string, any> = {};
+    for (const [key, val] of Object.entries(rawStats)) {
+      if (typeof val === 'number' || typeof val === 'string' || typeof val === 'boolean') {
+        cleanStats[key] = val;
+      }
+    }
+
     const minimalContext = {
       scenario: context?.scenario || 'normal',
-      contextId: context?.contextId || `CTX-${context?.scenario?.toUpperCase() || 'NORMAL'}-2026-001`,
+      contextId: context?.contextId || `CTX-${(context?.scenario || 'normal').toUpperCase()}-2026-001`,
       overallStatus: context?.overallStatus || 'ONLINE - ACTIVE',
       executiveSummary: context?.executiveSummary || '',
-      observations: (context?.generatedObservations || context?.observations || []).slice(0, 15).map((o: any) => ({
+      compoundRiskIndex: context?.compoundRiskIndex || context?.overallRiskScore || (context?.scenario === 'critical' ? 89 : context?.scenario === 'warning' ? 58 : 12),
+      observations: (context?.generatedObservations || context?.observations || []).slice(0, 10).map((o: any) => ({
         id: o.id,
         severity: o.severity,
         category: o.category,
@@ -886,7 +1019,7 @@ export async function fetchAIRiskAssessment(context: any, forceRefresh = false, 
       })),
       triggeredRules: (context?.ruleEvaluations || context?.ruleDecisions || context?.triggeredRules || [])
         .filter((r: any) => r.isTriggered || r.status === 'Triggered' || r.triggeringRuleId)
-        .slice(0, 20)
+        .slice(0, 15)
         .map((r: any) => ({
           ruleId: r.ruleId || r.id,
           ruleName: r.ruleName || r.name,
@@ -894,14 +1027,13 @@ export async function fetchAIRiskAssessment(context: any, forceRefresh = false, 
           currentValue: r.currentValue,
           threshold: r.threshold
         })),
-      statistics: context?.domainStats || context?.statistics || {},
-      recommendations: (context?.recommendations || []).slice(0, 10).map((rec: any) => ({
+      statistics: cleanStats,
+      recommendations: (context?.recommendations || []).slice(0, 5).map((rec: any) => ({
         id: rec.id,
         title: rec.title,
         category: rec.category,
         priority: rec.priority
-      })),
-      compoundRiskIndex: context?.compoundRiskIndex || context?.overallRiskScore || 89
+      }))
     };
 
     const targetUrl = API_BASE_URL.replace(/\/+$/, '').endsWith('/api')
@@ -911,7 +1043,13 @@ export async function fetchAIRiskAssessment(context: any, forceRefresh = false, 
     const requestBody = {
       scenario: minimalContext.scenario,
       contextId: minimalContext.contextId,
-      context: minimalContext,
+      overallStatus: minimalContext.overallStatus,
+      executiveSummary: minimalContext.executiveSummary,
+      compoundRiskIndex: minimalContext.compoundRiskIndex,
+      triggeredRules: minimalContext.triggeredRules,
+      observations: minimalContext.observations,
+      statistics: minimalContext.statistics,
+      recommendations: minimalContext.recommendations,
       forceRefresh,
       fallback: useFallback
     };
@@ -944,3 +1082,4 @@ export async function fetchAIRiskAssessment(context: any, forceRefresh = false, 
     throw err;
   }
 }
+

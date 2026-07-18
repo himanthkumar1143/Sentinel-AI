@@ -37,7 +37,7 @@ export const AnimatedEnterprisePipeline: React.FC = () => {
       title: 'Industrial Sensors',
       subtitle: 'SCADA / Gas / Temp / Pressure / Humidity',
       description: 'Independent edge telemetry streams reporting raw physical metrics across 8 plant sectors.',
-      phase: 'Phase 2 Source',
+      phase: 'Stage 2 Source',
       status: 'active',
       icon: <Gauge className="w-5 h-5 text-industrial-cyan" />,
       samplePayload: `{ "sensor_id": "scada-gas-101", "reading_ppm": 1.4, "gas_type": "H2S_CH4_MIX" }`
@@ -48,7 +48,7 @@ export const AnimatedEnterprisePipeline: React.FC = () => {
       title: 'Data Collection',
       subtitle: 'Multi-Source Ingestion Gateway',
       description: 'Fetches every industrial source (SCADA, SAP maintenance, work permits, weather, and shift rosters) into a unified buffer.',
-      phase: 'Phase 2 Collector',
+      phase: 'Stage 2 Collector',
       status: 'active',
       icon: <Database className="w-5 h-5 text-industrial-cyan" />,
       samplePayload: `{ "collectionTimestamp": "2026-07-15T15:30:00Z", "sources": { "gas": [...], "maintenance": {...} } }`
@@ -59,7 +59,7 @@ export const AnimatedEnterprisePipeline: React.FC = () => {
       title: 'Validation',
       subtitle: 'Rule-Engine Rejection & Quality Assurance',
       description: 'Strict rule enforcement rejecting negative gas/pressure, invalid timestamps, missing IDs, or non-integer worker counts.',
-      phase: 'Phase 2 Validator',
+      phase: 'Stage 2 Validator',
       status: 'active',
       icon: <ShieldCheck className="w-5 h-5 text-industrial-safe" />,
       samplePayload: `{ "isValid": true, "totalChecked": 42, "errorCount": 0, "issues": [] }`
@@ -70,7 +70,7 @@ export const AnimatedEnterprisePipeline: React.FC = () => {
       title: 'Normalization',
       subtitle: 'Standardized Units & Schema Alignment',
       description: 'Normalizes field names and units (e.g., gas_ppm -> gasConcentration, workerCount -> workersPresent, temp -> temperature).',
-      phase: 'Phase 2 Normalizer',
+      phase: 'Stage 2 Normalizer',
       status: 'active',
       icon: <Cpu className="w-5 h-5 text-industrial-cyan" />,
       samplePayload: `{ "sensors": [{ "id": "scada-gas-101", "currentValue": 1.4, "unit": "PPM", "status": "safe" }] }`
@@ -81,7 +81,7 @@ export const AnimatedEnterprisePipeline: React.FC = () => {
       title: 'Unified Plant Model',
       subtitle: 'Single Enterprise Data Backbone',
       description: 'Synthesizes Plant, Operational, Environmental, Maintenance, Permit, Worker, and Sensor domains into one master enterprise object.',
-      phase: 'Phase 2 Model',
+      phase: 'Stage 2 Model',
       status: 'active',
       icon: <Layers className="w-5 h-5 text-industrial-cyan animate-pulse" />,
       samplePayload: `{ "plant": { "code": "SIPC-A", "overallStatus": "ONLINE - NORMAL" }, "operational": { "workersPresent": 142 } }`
@@ -92,10 +92,10 @@ export const AnimatedEnterprisePipeline: React.FC = () => {
       title: 'Operational Context Intelligence',
       subtitle: 'Cross-Domain Activity Correlation',
       description: 'Analyzes spatial overlap between active hot-work permits, maintenance overhaul crews, and live sensor conditions.',
-      phase: 'Phase 3 Engine',
+      phase: 'Stage 3 Engine',
       status: 'roadmap',
       icon: <BrainCircuit className="w-5 h-5 text-industrial-warning" />,
-      samplePayload: `[RESERVED FOR PHASE 3: Contextual activity graph & spatial permit conflicts]`
+      samplePayload: `[RESERVED FOR CONTEXT: Contextual activity graph & spatial permit conflicts]`
     },
     {
       id: 7,
@@ -103,10 +103,10 @@ export const AnimatedEnterprisePipeline: React.FC = () => {
       title: 'Compound Risk Intelligence',
       subtitle: 'AI Cascading Failure Prediction',
       description: 'Computes multi-variable compound risk progression beyond isolated single-sensor thresholds using advanced inference.',
-      phase: 'Phase 4 AI Engine',
+      phase: 'Stage 4 AI Engine',
       status: 'roadmap',
       icon: <Flame className="w-5 h-5 text-industrial-critical" />,
-      samplePayload: `[RESERVED FOR PHASE 4: AI predictive probability vectors & automated containment trigger]`
+      samplePayload: `[RESERVED FOR AI: AI predictive probability vectors & automated containment trigger]`
     },
     {
       id: 8,
@@ -114,7 +114,7 @@ export const AnimatedEnterprisePipeline: React.FC = () => {
       title: 'Industrial Dashboard',
       subtitle: 'Control Room Telemetry UI',
       description: 'Sub-second real-time enterprise control center displaying live telemetry arrays, spatial maps, and explainable safety protocols.',
-      phase: 'Phase 1 Active UI',
+      phase: 'Stage 1 Active UI',
       status: 'active',
       icon: <Activity className="w-5 h-5 text-industrial-safe" />,
       samplePayload: `{ "currentView": "DashboardView", "selectedScenario": "normal", "latency": "12ms" }`
@@ -145,7 +145,7 @@ export const AnimatedEnterprisePipeline: React.FC = () => {
         </div>
         <div className="flex items-center gap-3">
           <Badge variant="outline" className="border-industrial-cyan/40 text-industrial-cyan font-mono text-xs px-3 py-1 bg-carbon-800/80">
-            Phase 2 Backbone Online
+            Stage 2 Backbone Online
           </Badge>
           <div className="hidden sm:flex items-center gap-2 bg-carbon-800 border border-slateBlue-800 px-3 py-1 rounded text-xs font-mono text-slateBlue-300">
             <Terminal className="w-3.5 h-3.5 text-industrial-safe" />

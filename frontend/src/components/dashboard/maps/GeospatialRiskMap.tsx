@@ -67,7 +67,7 @@ export const GeospatialRiskMap: React.FC<GeospatialRiskMapProps> = ({ zones }) =
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
         {/* 2D Floor Plan Grid (Left / 8 Cols) */}
         <div className="lg:col-span-8 space-y-3">
           <div className="flex items-center justify-between text-xs font-mono text-slateBlue-400 bg-carbon-900 px-3.5 py-2 rounded border border-slateBlue-800">
@@ -75,17 +75,17 @@ export const GeospatialRiskMap: React.FC<GeospatialRiskMapProps> = ({ zones }) =
             <span className="text-industrial-cyan font-semibold">Select zone to inspect</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 bg-grid-pattern p-5 rounded-xl border border-slateBlue-800/90 bg-carbon-900/70 min-h-[460px]">
+          <div className="grid grid-flow-dense grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-grid-pattern p-3 sm:p-4 rounded-xl border border-slateBlue-800/90 bg-carbon-900/70">
             {zones.map((zone) => {
               const isSelected = zone.id === selectedZoneId;
               return (
                 <div
                   key={zone.id}
                   onClick={() => setSelectedZoneId(zone.id)}
-                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
+                  className={`p-3 sm:p-3.5 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between ${
                     zoneGridSpan[zone.id] || 'col-span-1'
                   } ${getZoneBorderColor(zone.status)} ${
-                    isSelected ? 'ring-2 ring-industrial-cyan shadow-xl scale-[1.02] border-industrial-cyan' : 'opacity-90 hover:opacity-100'
+                    isSelected ? 'ring-2 ring-industrial-cyan shadow-xl scale-[1.01] border-industrial-cyan' : 'opacity-95 hover:opacity-100'
                   }`}
                 >
                   {/* Zone Header */}
@@ -146,7 +146,7 @@ export const GeospatialRiskMap: React.FC<GeospatialRiskMapProps> = ({ zones }) =
           <div>
             <div className="flex items-center justify-between border-b border-slateBlue-800/80 pb-3">
               <span className="text-xs font-mono font-bold tracking-wider uppercase text-industrial-cyan flex items-center gap-2">
-                <Cpu className="w-4 h-4" /> Zone Telemetry Inspector
+                <Cpu className="w-4 h-4" /> Zone Details
               </span>
               <Badge variant={selectedZone.status === 'critical' ? 'critical' : selectedZone.status === 'warning' ? 'warning' : 'safe'} className="font-mono font-bold">
                 {selectedZone.status.toUpperCase()}
@@ -223,7 +223,7 @@ export const GeospatialRiskMap: React.FC<GeospatialRiskMapProps> = ({ zones }) =
           <div className="pt-3 border-t border-slateBlue-800/80 bg-carbon-800/40 -mx-5 -mb-5 p-3.5 rounded-b-xl">
             <div className="flex items-center justify-between text-xs font-mono text-slateBlue-400">
               <span>Future integration:</span>
-              <span className="text-industrial-cyan font-semibold">AI Geospatial Engine (Phase 4)</span>
+              <span className="text-industrial-cyan font-semibold">AI Geospatial Engine (Stage 4)</span>
             </div>
           </div>
         </div>

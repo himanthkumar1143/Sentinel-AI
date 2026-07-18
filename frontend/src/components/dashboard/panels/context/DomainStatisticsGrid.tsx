@@ -81,7 +81,7 @@ export const DomainStatisticsGrid: React.FC<DomainStatisticsGridProps> = ({
     <div className="space-y-3">
       <div className="flex items-center justify-between text-xs font-mono text-slateBlue-400 px-1">
         <span className="font-bold uppercase tracking-wider text-slate-200 flex items-center gap-2">
-          <span>● MULTI-DOMAIN OBSERVATION BREAKDOWN (PART 13)</span>
+          <span>● MULTI-DOMAIN OBSERVATION BREAKDOWN</span>
         </span>
         <span>Click domain tile to filter active observation cards</span>
       </div>

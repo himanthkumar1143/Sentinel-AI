@@ -131,9 +131,6 @@ export const SpatialActivityCorrelationDiagram: React.FC<SpatialActivityCorrelat
     return false;
   };
 
-  const hasAnySelection = !!(selectedObservationId || selectedNodeId);
-  const activeObs = observations.find(o => o.id === selectedObservationId);
-
   return (
     <Card className="bg-carbon-900/80 border-slateBlue-800 backdrop-blur-md shadow-panel relative overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-15 pointer-events-none" />
@@ -143,7 +140,7 @@ export const SpatialActivityCorrelationDiagram: React.FC<SpatialActivityCorrelat
             <div className="flex items-center gap-2">
               <Share2 className="w-4 h-4 text-industrial-cyan animate-pulse" />
               <h3 className="text-base font-mono font-extrabold text-slate-100 uppercase tracking-wide">
-                Spatial Activity Correlation Network (Part 11)
+                Area Relationships
               </h3>
             </div>
             <p className="text-xs font-mono text-slateBlue-400">
@@ -154,87 +151,6 @@ export const SpatialActivityCorrelationDiagram: React.FC<SpatialActivityCorrelat
             {nodes.length} Correlated Nodes Active
           </Badge>
         </div>
-
-        {/* Status Bar showing Active Synchronization */}
-        {hasAnySelection && (
-          <div className="p-3.5 rounded-xl bg-carbon-950/90 border border-industrial-cyan/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-mono text-xs text-cyan-300 shadow-inner animate-in fade-in duration-300">
-            <div className="flex items-center gap-2.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-industrial-cyan animate-pulse shadow-glow-safe" />
-              <span className="font-bold uppercase tracking-wider">Two-Way Synchronization Active</span>
-              {selectedNodeId && <Badge variant="outline" className="border-cyan-500 text-cyan-300 text-[10px]">Node: {selectedNodeId}</Badge>}
-              {selectedObservationId && <Badge variant="outline" className="border-cyan-500 text-cyan-300 text-[10px]">Observation: {selectedObservationId}</Badge>}
-            </div>
-            <div className="flex items-center gap-4 text-[11px] text-slateBlue-300">
-              <span className="flex items-center gap-1.5">
-                <span className="w-3 h-0.5 bg-industrial-cyan inline-block animate-pulse shadow-[0_0_8px_rgba(34,211,238,0.8)]" /> Edge Glow &amp; Flowing Packets
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-carbon-900 border border-slateBlue-500 opacity-40 inline-block" /> Unselected Nodes Dimmed (30%)
-              </span>
-              <button
-                onClick={() => {
-                  if (onSelectObservation) onSelectObservation(null);
-                  if (onSelectNode) onSelectNode(null);
-                }}
-                className="text-industrial-cyan hover:underline font-bold px-2 py-0.5 rounded bg-slateBlue-900/80 border border-industrial-cyan/30 shrink-0"
-              >
-                Clear Selection
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* PART 1 & PART 3: Top-to-Bottom Causal Path Animation */}
-        {activeObs && activeObs.dependencyChain && activeObs.dependencyChain.length > 0 && (
-          <div className="bg-carbon-950 border border-industrial-cyan/60 rounded-2xl p-5 space-y-4 font-mono shadow-[0_0_30px_rgba(34,211,238,0.15)] animate-in fade-in duration-300 relative overflow-hidden">
-            <div className="flex items-center justify-between border-b border-slateBlue-800/80 pb-3 relative z-10">
-              <div className="flex items-center gap-2 text-xs text-industrial-cyan font-extrabold uppercase tracking-wider">
-                <Share2 className="w-4 h-4 animate-pulse" />
-                <span>Synchronized Causal Correlation Path — {activeObs.title}</span>
-              </div>
-              <Badge variant="outline" className="border-industrial-cyan/50 text-industrial-cyan text-[10px]">
-                Sequential Top-to-Bottom Flow
-              </Badge>
-            </div>
-
-            <div className="flex flex-col items-center space-y-3 py-2 max-w-2xl mx-auto relative z-10">
-              {activeObs.dependencyChain.map((stepNode, idx) => (
-                <React.Fragment key={idx}>
-                  {idx > 0 && (
-                    <div
-                      className="flex flex-col items-center opacity-0 animate-fadeInDown"
-                      style={{ animationDelay: `${idx * 250 - 100}ms` }}
-                    >
-                      <div className="w-0.5 h-6 bg-gradient-to-b from-industrial-cyan to-cyan-400 animate-pulse shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
-                      <div className="text-industrial-cyan text-xs font-black -mt-1">▼</div>
-                    </div>
-                  )}
-                  <div
-                    className="w-full bg-carbon-900 border border-industrial-cyan/70 rounded-xl p-4 flex items-center justify-between shadow-[0_0_20px_rgba(34,211,238,0.25)] scale-105 transition-all duration-300 opacity-0 animate-fadeInDown"
-                    style={{ animationDelay: `${idx * 250}ms` }}
-                  >
-                    <div className="flex items-center gap-3.5">
-                      <span className="w-7 h-7 rounded-lg bg-industrial-cyan text-carbon-950 flex items-center justify-center text-xs font-black shadow-glow-safe">
-                        {stepNode.step || idx + 1}
-                      </span>
-                      <div>
-                        <span className="text-[10px] text-industrial-cyan uppercase font-extrabold block tracking-wider">
-                          {stepNode.type || 'Correlation'} Node
-                        </span>
-                        <span className="text-sm font-extrabold text-slate-100">
-                          {stepNode.label}: <span className="text-cyan-300">{stepNode.value ?? 'ACTIVE'}</span>
-                        </span>
-                      </div>
-                    </div>
-                    <span className="text-xs text-slateBlue-300 max-w-[240px] text-right hidden sm:block">
-                      {stepNode.description}
-                    </span>
-                  </div>
-                </React.Fragment>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Spatial Node Grid with Connecting Arrows */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 relative pt-2">
@@ -251,9 +167,7 @@ export const SpatialActivityCorrelationDiagram: React.FC<SpatialActivityCorrelat
               : 'border-slateBlue-800 bg-carbon-950/80 hover:border-slateBlue-600';
 
             const selectionClasses = isHighlighted
-              ? 'scale-105 ring-2 ring-industrial-cyan shadow-[0_0_25px_rgba(34,211,238,0.6)] animate-pulse z-20'
-              : hasAnySelection
-              ? 'opacity-30 transition-all duration-250'
+              ? 'ring-1 ring-industrial-cyan shadow-md z-10'
               : '';
 
             return (

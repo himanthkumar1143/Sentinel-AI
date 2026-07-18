@@ -17,4 +17,7 @@ router.get('/plant-status', telemetryController_1.getPlantStatusData);
 router.get('/scenarios', telemetryController_1.getScenariosList);
 router.get('/payload', telemetryController_1.getFullScenarioPayload);
 router.get('/context', contextController_1.getOperationalContext);
+// PART 9: Phase 5 Interactive Scenario Builder Simulation routes
+router.post('/simulate', telemetryController_1.simulateCustomScenario);
+router.post('/pipeline/simulate', telemetryController_1.simulateCustomScenario);
 exports.default = router;

@@ -46,7 +46,7 @@ export const OverviewCards: React.FC<OverviewCardsProps> = ({ overview }) => {
         <Card glow={getRiskProgressVariant(overview.compoundRiskIndex) === 'critical' ? 'critical' : 'none'} className="sm:col-span-2 lg:col-span-2 flex flex-col justify-between border-2 border-industrial-cyan/30 shadow-glow-safe">
           <CardContent className="p-5 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-mono font-bold text-industrial-cyan uppercase tracking-wider">Compound Risk Index</span>
+              <span className="text-xs font-mono font-bold text-industrial-cyan uppercase tracking-wider">Overall Risk Score</span>
               <ShieldAlert className="w-5 h-5 text-industrial-cyan animate-pulse" />
             </div>
             <div className="flex items-baseline justify-between pt-1">
